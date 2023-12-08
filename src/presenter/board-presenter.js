@@ -8,16 +8,22 @@ import EditorEventView from '../view/editor-event-view';
 export default class BoardPresenter {
   listEventsComponent = new ListEventsView();
 
-  constructor({ boardContainer }) {
+  constructor({ boardContainer, eventsModel }) {
     this.boardContainer = boardContainer;
+    this.eventsModel = eventsModel;
   }
 
   init() {
+    this.boardEvents = this.eventsModel.getEvents();
+
     render(new ListSortView(), this.boardContainer);
     render(this.listEventsComponent, this.boardContainer);
     render(new NewEventView(), this.listEventsComponent.getElement());
-    for (let i = 0; i < 3; i++) {
-      render(new EventView(), this.listEventsComponent.getElement());
+    for (let i = 0; i < this.boardEvents.length; i++) {
+      render(
+        new EventView({ event: this.boardEvents[i] }),
+        this.listEventsComponent.getElement()
+      );
     }
     render(new EditorEventView(), this.listEventsComponent.getElement());
   }
