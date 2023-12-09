@@ -8,9 +8,13 @@ import EditorEventView from '../view/editor-event-view';
 export default class BoardPresenter {
   listEventsComponent = new ListEventsView();
 
-  constructor({ boardContainer, eventsModel }) {
+  constructor(board) {
+    const { boardContainer, eventsModel, destinationModel, offerrsModel } =
+      board;
     this.boardContainer = boardContainer;
     this.eventsModel = eventsModel;
+    this.destinationModel = destinationModel;
+    this.offersModel = offerrsModel;
   }
 
   init() {
@@ -19,12 +23,14 @@ export default class BoardPresenter {
     render(new ListSortView(), this.boardContainer);
     render(this.listEventsComponent, this.boardContainer);
     render(new NewEventView(), this.listEventsComponent.getElement());
-    for (let i = 0; i < this.boardEvents.length; i++) {
+    this.boardEvents.forEach((event) => {
+      const destination = this.destinationModel.getById(event.destination);
+      const offer = this.offersModel.getByType(event.type);
       render(
-        new EventView({ event: this.boardEvents[i] }),
+        new EventView({ event, destination, offer }),
         this.listEventsComponent.getElement()
       );
-    }
+    });
     render(new EditorEventView(), this.listEventsComponent.getElement());
   }
 }

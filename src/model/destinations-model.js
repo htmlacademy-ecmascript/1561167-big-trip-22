@@ -1,6 +1,6 @@
 import { loadDestinations } from '../mock/mocks';
 
-export default class DescriptionsModel {
+export default class DestinationsModel {
   destinations = loadDestinations();
 
   getById = (destinationId) =>
