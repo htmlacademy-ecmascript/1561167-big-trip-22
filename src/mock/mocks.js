@@ -14,34 +14,44 @@ const CITIES = ['Amsterdam', 'Chamonix', 'Geneva', 'Sofia'];
 
 const mockEvents = [
   {
-    id: '11',
-    basePrice: 1100,
+    id: '00',
+    basePrice: 0,
     dateFrom: '2019-07-10T11:22:13.375Z',
     dateTo: '2019-07-10T11:32:13.375Z',
     destination: 'dest1',
     isFavorite: false,
-    offers: ['offer1'],
-    type: getRandomArrayElement(eventType),
+    offers: ['offer01'],
+    type: eventType[0],
   },
   {
-    id: '12',
-    basePrice: 1200,
+    id: '11',
+    basePrice: 1100,
     dateFrom: '2019-07-12T22:55:56.845Z',
     dateTo: '2019-07-13T11:22:13.375Z',
     destination: 'dest2',
     isFavorite: true,
     offers: [],
-    type: getRandomArrayElement(eventType),
+    type: eventType[1],
   },
   {
-    id: '13',
-    basePrice: 1300,
+    id: '22',
+    basePrice: 2200,
     dateFrom: '2019-07-14T22:55:56.845Z',
     dateTo: '2019-07-18T11:22:13.375Z',
     destination: 'dest3',
     isFavorite: false,
-    offers: ['offer1'],
-    type: getRandomArrayElement(eventType),
+    offers: ['offer21', 'offer23'],
+    type: eventType[2],
+  },
+  {
+    id: '33',
+    basePrice: 3300,
+    dateFrom: '2019-07-14T09:55:56.845Z',
+    dateTo: '2019-07-14T11:22:13.375Z',
+    destination: 'dest3',
+    isFavorite: true,
+    offers: ['offer31'],
+    type: eventType[3],
   },
 ];
 const mockDestinations = [
@@ -84,9 +94,14 @@ const mockOffers = [
     type: eventType[0],
     offers: [
       {
-        id: 'offer1',
+        id: 'offer01',
         title: 'Upgrade to a business class',
-        price: 120,
+        price: 10,
+      },
+      {
+        id: 'offer02',
+        title: 'Upgrade to a business class',
+        price: 20,
       },
     ],
   },
@@ -94,19 +109,39 @@ const mockOffers = [
     type: eventType[1],
     offers: [
       {
-        id: 'offer2',
+        id: 'offer11',
         title: 'Upgrade to a business class',
-        price: 220,
+        price: 110,
       },
     ],
   },
   {
-    type: 'taxi',
+    type: eventType[2],
     offers: [
       {
-        id: 'offer1',
+        id: 'offer21',
         title: 'Upgrade to a business class',
-        price: 120,
+        price: 21,
+      },
+      {
+        id: 'offer22',
+        title: 'Upgrade to a business class',
+        price: 22,
+      },
+      {
+        id: 'offer23',
+        title: 'Upgrade to a business class',
+        price: 23,
+      },
+    ],
+  },
+  {
+    type: eventType[3],
+    offers: [
+      {
+        id: 'offer31',
+        title: 'Upgrade to a business class',
+        price: 31,
       },
     ],
   },

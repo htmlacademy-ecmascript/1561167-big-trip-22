@@ -9,11 +9,11 @@ export default class BoardPresenter {
   listEventsComponent = new ListEventsView();
 
   constructor(board) {
-    const { boardContainer, eventsModel, destinationModel, offerrsModel } =
+    const { boardContainer, eventsModel, destinationsModel, offerrsModel } =
       board;
     this.boardContainer = boardContainer;
     this.eventsModel = eventsModel;
-    this.destinationModel = destinationModel;
+    this.destinationModel = destinationsModel;
     this.offersModel = offerrsModel;
   }
 
@@ -25,9 +25,9 @@ export default class BoardPresenter {
     render(new NewEventView(), this.listEventsComponent.getElement());
     this.boardEvents.forEach((event) => {
       const destination = this.destinationModel.getById(event.destination);
-      const offer = this.offersModel.getByType(event.type);
+      const offers = this.offersModel.getByType(event.type, event.offers);
       render(
-        new EventView({ event, destination, offer }),
+        new EventView({ event, destination, offers }),
         this.listEventsComponent.getElement()
       );
     });

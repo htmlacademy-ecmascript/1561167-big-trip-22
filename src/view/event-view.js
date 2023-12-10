@@ -6,10 +6,33 @@ import {
   normalizeEventDate,
 } from '../utils';
 
-const createEventTemplate = ({ event, destination, offer }) => {
+const createListOffersTemplate = (offers) => {
+  if (!offers.length) {
+    return '';
+  }
+
+  const items = offers
+    .map(
+      ({ title, price }) => `
+          <li class="event__offer">
+            <span class="event__offer-title">${title}</span>
+            &plus;&euro;&nbsp;
+            <span class="event__offer-price">${price}</span>
+          </li>`
+    )
+    .join('');
+
+  return `
+    <ul class="event__selected-offers">
+      ${items}
+    </ul>
+  `;
+};
+
+const createEventTemplate = ({ event, destination, offers }) => {
   const { dateFrom, dateTo, type, basePrice, isFavorite } = event;
   const { name } = destination;
-  const { offers } = offer;
+  // const { offers } = offers;
   return `
   <li class="trip-events__item">
     <div class="event">
@@ -34,13 +57,7 @@ const createEventTemplate = ({ event, destination, offer }) => {
         &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
       </p>
       <h4 class="visually-hidden">Offers:</h4>
-      <ul class="event__selected-offers">
-        <li class="event__offer">
-          <span class="event__offer-title">Order Uber</span>
-          &plus;&euro;&nbsp;
-          <span class="event__offer-price">20</span>
-        </li>
-      </ul>
+      ${createListOffersTemplate(offers)}
       <button class="event__favorite-btn
       ${isFavorite ? ' event__favorite-btn--active' : ''}" type="button">
         <span class="visually-hidden">Add to favorite</span>
@@ -57,11 +74,18 @@ const createEventTemplate = ({ event, destination, offer }) => {
 };
 
 export default class EventView {
-  constructor(event) {
+  constructor({ event, destination, offers }) {
     this.event = event;
+    this.destination = destination;
+    this.offers = offers;
   }
 
-  getTemplate = () => createEventTemplate(this.event);
+  getTemplate = () =>
+    createEventTemplate({
+      event: this.event,
+      destination: this.destination,
+      offers: this.offers,
+    });
 
   getElement = () => {
     if (!this.element) {
