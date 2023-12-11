@@ -5,6 +5,10 @@ export default class DestinationsModel {
     this.destinations = loadDestinations();
   }
 
+  getList = () => this.destinations;
+
+  getNames = () => {};
+
   getById = (destinationId) =>
     this.destinations.find(({ id }) => id === destinationId);
 }

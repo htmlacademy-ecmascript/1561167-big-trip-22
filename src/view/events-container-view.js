@@ -1,11 +1,11 @@
 import { createElement } from '../render';
 
-const createListEventsTemplate = () => `
+const createEventsContainerView = () => `
   <ul class="trip-events__list"></ul>
 `;
 
-export default class ListEventsView {
-  getTemplate = () => createListEventsTemplate();
+export default class EventsContainerView {
+  getTemplate = () => createEventsContainerView();
 
   getElement = () => {
     if (!this.element) {
