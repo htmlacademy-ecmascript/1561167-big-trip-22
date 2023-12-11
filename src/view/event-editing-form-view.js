@@ -1,5 +1,39 @@
 import { createElement } from '../render';
 
+const createPhotosTapeTemplate = (photos) => {
+  const createPhotoTemplate = ({ src, description }) =>
+    `<img class="event__photo" src="${src}" alt="${description}">`;
+
+  if (!photos.length) {
+    return '';
+  }
+
+  return `
+    <div class="event__photos-container">
+      <div class="event__photos-tape">
+        ${photos.map(createPhotoTemplate).join('')}
+      </div>
+    </div>
+  `;
+};
+
+const createDestinationTemplate = (destination) => {
+  if (!destination) {
+    return '';
+  }
+
+  const { description, pictures = [] } = destination;
+  return `
+    <section class="event__section  event__section--destination">
+      <h3 class="event__section-title  event__section-title--destination">
+        Destination
+      </h3>
+      <p class="event__destination-description">${description}</p>
+      ${createPhotosTapeTemplate(pictures)}
+    </section>
+  `;
+};
+
 const createListTitlesTemplate = (titles) => {
   if (!titles) {
     return '';
@@ -12,7 +46,7 @@ const createListTitlesTemplate = (titles) => {
   `;
 };
 
-const createEventEditingFormTemplate = ({ titles }) => `
+const createEventEditingFormTemplate = ({ titles, destination }) => `
   <li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
@@ -156,22 +190,23 @@ const createEventEditingFormTemplate = ({ titles }) => `
             </div>
           </div>
         </section>
-
-        <section class="event__section  event__section--destination">
-          <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">Chamonix-Mont-Blanc (usually shortened to Chamonix) is a resort area near the junction of France, Switzerland and Italy. At the base of Mont Blanc, the highest summit in the Alps, it's renowned for its skiing.</p>
-        </section>
+      ${createDestinationTemplate(destination)}
       </section>
     </form>
   </li>
 `;
 
 export default class EventEditingFormView {
-  constructor({ titles }) {
+  constructor({ titles, destination }) {
     this.titles = titles;
+    this.destination = destination;
   }
 
-  getTemplate = () => createEventEditingFormTemplate({ titles: this.titles });
+  getTemplate = () =>
+    createEventEditingFormTemplate({
+      titles: this.titles,
+      destination: this.destination,
+    });
 
   getElement = () => {
     if (!this.element) {

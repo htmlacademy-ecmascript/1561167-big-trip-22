@@ -79,9 +79,17 @@ const mockDestinations = [
   },
   {
     id: 'dest2',
-    description: getRandomArrayElement(LOREMS),
+    description: getRandomArrayElement(LOREMS) + getRandomArrayElement(LOREMS),
     name: getRandomArrayElement(CITIES),
     pictures: [
+      {
+        src: `https://loremflickr.com/248/152?random=${Math.random()}`,
+        description: 'Chamonix parliament building',
+      },
+      {
+        src: `https://loremflickr.com/248/152?random=${Math.random()}`,
+        description: 'Chamonix parliament building',
+      },
       {
         src: `https://loremflickr.com/248/152?random=${Math.random()}`,
         description: 'Chamonix parliament building',
