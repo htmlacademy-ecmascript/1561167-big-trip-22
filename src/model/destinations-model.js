@@ -7,7 +7,7 @@ export default class DestinationsModel {
 
   getList = () => this.destinations;
 
-  getNames = () => {};
+  getNames = () => this.destinations.map(({ name }) => name);
 
   getById = (destinationId) =>
     this.destinations.find(({ id }) => id === destinationId);

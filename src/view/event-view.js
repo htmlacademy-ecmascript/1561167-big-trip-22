@@ -30,7 +30,6 @@ const createListOffersTemplate = (offers) => {
 };
 
 const createEventTemplate = ({ event, destination, offers }) => {
-  console.log('createEventTemplate  destination:', destination);
   const { dateFrom, dateTo, type, basePrice, isFavorite } = event;
   const name = destination?.name ?? '';
   return `

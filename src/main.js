@@ -12,7 +12,6 @@ const filterContainerNode = tripHeaderNode.querySelector(
 const eventsContainerNode = document.querySelector('.trip-events');
 const eventsModel = new EventsModel();
 const destinationsModel = new DestinationsModel();
-console.log('destinationsModel:', destinationsModel);
 const offerrsModel = new OffersModel();
 const boardPresenter = new BoardPresenter({
   boardContainer: eventsContainerNode,

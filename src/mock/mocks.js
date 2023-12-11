@@ -18,7 +18,7 @@ const mockEvents = [
     basePrice: 0,
     dateFrom: '2019-07-10T11:22:13.375Z',
     dateTo: '2019-07-10T11:32:13.375Z',
-    destination: 'dest1',
+    destination: 'dest0',
     isFavorite: false,
     offers: ['offer01'],
     type: eventType[0],
@@ -28,7 +28,7 @@ const mockEvents = [
     basePrice: 1100,
     dateFrom: '2019-07-12T22:55:56.845Z',
     dateTo: '2019-07-13T11:22:13.375Z',
-    destination: 'dest2',
+    destination: 'dest1',
     isFavorite: true,
     offers: [],
     type: eventType[1],
@@ -38,7 +38,7 @@ const mockEvents = [
     basePrice: 2200,
     dateFrom: '2019-07-14T22:55:56.845Z',
     dateTo: '2019-07-18T11:22:13.375Z',
-    destination: 'dest3',
+    destination: 'dest2',
     isFavorite: false,
     offers: ['offer21', 'offer23'],
     type: eventType[2],
@@ -55,39 +55,62 @@ const mockEvents = [
   },
 ];
 const mockDestinations = [
-  // {
-  //   id: 'dest1',
-  //   description: getRandomArrayElement(LOREMS),
-  //   name: getRandomArrayElement(CITIES),
-  //   pictures: [
-  //     {
-  //       src: `https://loremflickr.com/248/152?random=${Math.random()}`,
-  //       description: 'Chamonix parliament building',
-  //     },
-  //   ],
-  // },
-  // {
-  //   id: 'dest2',
-  //   description: getRandomArrayElement(LOREMS),
-  //   name: getRandomArrayElement(CITIES),
-  //   pictures: [
-  //     {
-  //       src: `https://loremflickr.com/248/152?random=${Math.random()}`,
-  //       description: 'Chamonix parliament building',
-  //     },
-  //   ],
-  // },
-  // {
-  //   id: 'dest3',
-  //   description: getRandomArrayElement(LOREMS),
-  //   name: getRandomArrayElement(CITIES),
-  //   pictures: [
-  //     {
-  //       src: `https://loremflickr.com/248/152?random=${Math.random()}`,
-  //       description: 'Chamonix parliament building',
-  //     },
-  //   ],
-  // },
+  {
+    id: 'dest0',
+    description: getRandomArrayElement(LOREMS),
+    name: CITIES[1],
+    pictures: [
+      {
+        src: `https://loremflickr.com/248/152?random=${Math.random()}`,
+        description: 'Chamonix parliament building',
+      },
+    ],
+  },
+  {
+    id: 'dest1',
+    description: getRandomArrayElement(LOREMS),
+    name: getRandomArrayElement(CITIES),
+    pictures: [
+      {
+        src: `https://loremflickr.com/248/152?random=${Math.random()}`,
+        description: 'Chamonix parliament building',
+      },
+    ],
+  },
+  {
+    id: 'dest2',
+    description: getRandomArrayElement(LOREMS),
+    name: getRandomArrayElement(CITIES),
+    pictures: [
+      {
+        src: `https://loremflickr.com/248/152?random=${Math.random()}`,
+        description: 'Chamonix parliament building',
+      },
+      {
+        src: `https://loremflickr.com/248/152?random=${Math.random()}`,
+        description: 'Chamonix parliament building',
+      },
+      {
+        src: `https://loremflickr.com/248/152?random=${Math.random()}`,
+        description: 'Chamonix parliament building',
+      },
+      {
+        src: `https://loremflickr.com/248/152?random=${Math.random()}`,
+        description: 'Chamonix parliament building',
+      },
+    ],
+  },
+  {
+    id: 'dest3',
+    description: getRandomArrayElement(LOREMS),
+    name: getRandomArrayElement(CITIES),
+    pictures: [
+      {
+        src: `https://loremflickr.com/248/152?random=${Math.random()}`,
+        description: 'Chamonix parliament building',
+      },
+    ],
+  },
 ];
 const mockOffers = [
   {

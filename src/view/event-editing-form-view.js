@@ -1,6 +1,18 @@
 import { createElement } from '../render';
 
-const createEventEditingFormTemplate = () => `
+const createListTitlesTemplate = (titles) => {
+  if (!titles) {
+    return '';
+  }
+
+  return `
+    <datalist id="destination-list-1">
+      ${titles.map((title) => `<option value="${title}"></option>`).join('')}
+    </datalist>
+  `;
+};
+
+const createEventEditingFormTemplate = ({ titles }) => `
   <li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
@@ -68,11 +80,7 @@ const createEventEditingFormTemplate = () => `
             Flight
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Chamonix" list="destination-list-1">
-          <datalist id="destination-list-1">
-            <option value="Amsterdam"></option>
-            <option value="Geneva"></option>
-            <option value="Chamonix"></option>
-          </datalist>
+          ${createListTitlesTemplate(titles)}
         </div>
 
         <div class="event__field-group  event__field-group--time">
@@ -159,7 +167,11 @@ const createEventEditingFormTemplate = () => `
 `;
 
 export default class EventEditingFormView {
-  getTemplate = () => createEventEditingFormTemplate();
+  constructor({ titles }) {
+    this.titles = titles;
+  }
+
+  getTemplate = () => createEventEditingFormTemplate({ titles: this.titles });
 
   getElement = () => {
     if (!this.element) {
