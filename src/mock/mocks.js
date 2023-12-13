@@ -151,12 +151,12 @@ const mockOffers = [
     offers: [
       {
         id: 'offer21',
-        title: 'Upgrade to a business class',
+        title: 'Upgrade to',
         price: 21,
       },
       {
         id: 'offer22',
-        title: 'Upgrade to a business class',
+        title: 'Upgrade to a business',
         price: 22,
       },
       {

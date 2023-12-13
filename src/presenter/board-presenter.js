@@ -17,23 +17,32 @@ export default class BoardPresenter {
   }
 
   init() {
-    this.boardEvents = this.eventsModel.getEvents();
+    this.boardEvents = this.eventsModel.getAll();
 
     render(new ListSortView(), this.boardContainer);
     render(this.eventsContainerComponent, this.boardContainer);
 
-    this.boardEvents.forEach((event) => {
-      const destination = this.destinationModel.getById(event.destination);
-      const offers = this.offersModel.getByType(event.type, event.offers);
+    this.boardEvents.forEach((item) => {
+      const destination = this.destinationModel.getById(item.destination);
+      const offers = this.offersModel.getSelectedOnes({
+        eventType: item.type,
+        eventOffers: item.offers,
+      });
       render(
-        new EventView({ event, destination, offers }),
+        new EventView({ event: item, destination, offers }),
         this.eventsContainerComponent.getElement()
       );
     });
-    const titles = this.destinationModel.getNames();
-    const destinationEvent = this.destinationModel.getById('dest2');
+    // const event = null;
+    const event = this.eventsModel.getById('22');
+    const eventDestination = this.destinationModel.getById(event?.destination);
     render(
-      new EventEditingFormView({ titles, destination: destinationEvent }),
+      new EventEditingFormView({
+        titles: this.destinationModel.getNames(),
+        event,
+        offers: this.offersModel.getByType(event?.type),
+        destination: eventDestination,
+      }),
       this.eventsContainerComponent.getElement()
     );
   }
