@@ -7,6 +7,13 @@ import {
   humanizeDate,
 } from '../utils';
 
+const getTotalCostOffers = (offers) => {
+  if (!offers.length) {
+    return 0;
+  }
+
+  return offers.reduce((acc, item) => (acc += item.price), 0);
+};
 const createListOffersTemplate = (offers) => {
   if (!offers.length) {
     return '';
@@ -57,7 +64,8 @@ const createEventTemplate = ({ event, destination, offers }) => {
         </p>
       </div>
       <p class="event__price">
-        &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
+        &euro;&nbsp;<span class="event__price-value">
+        ${basePrice + getTotalCostOffers(offers)}</span>
       </p>
       <h4 class="visually-hidden">Offers:</h4>
       ${createListOffersTemplate(offers)}
