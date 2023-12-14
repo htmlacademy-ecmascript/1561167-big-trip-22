@@ -1,4 +1,4 @@
-const eventType = [
+const TYPES_EVENTS = [
   'Taxi',
   'Bus',
   'Train',
@@ -10,4 +10,7 @@ const eventType = [
   'Restaurant',
 ];
 
-export { eventType };
+const DURATION_EVENT_TEMPLATE = 'MMM DD';
+const DATE_EVENT_TEMPLATE = 'DD/MM/YY hh:mm';
+
+export { TYPES_EVENTS, DURATION_EVENT_TEMPLATE, DATE_EVENT_TEMPLATE };

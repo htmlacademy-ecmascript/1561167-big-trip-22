@@ -1,4 +1,4 @@
-import { eventType } from '../const';
+import { TYPES_EVENTS } from '../const';
 import { getRandomArrayElement } from '../utils';
 
 const LOREMS = [
@@ -21,7 +21,7 @@ const mockEvents = [
     destination: 'dest0',
     isFavorite: false,
     offers: ['offer01'],
-    type: eventType[0],
+    type: TYPES_EVENTS[0],
   },
   {
     id: '11',
@@ -31,7 +31,7 @@ const mockEvents = [
     destination: 'dest1',
     isFavorite: true,
     offers: [],
-    type: eventType[1],
+    type: TYPES_EVENTS[1],
   },
   {
     id: '22',
@@ -41,7 +41,7 @@ const mockEvents = [
     destination: 'dest2',
     isFavorite: false,
     offers: ['offer21', 'offer23'],
-    type: eventType[2],
+    type: TYPES_EVENTS[2],
   },
   {
     id: '33',
@@ -51,7 +51,7 @@ const mockEvents = [
     destination: 'dest3',
     isFavorite: true,
     offers: ['offer31'],
-    type: eventType[3],
+    type: TYPES_EVENTS[3],
   },
 ];
 const mockDestinations = [
@@ -122,7 +122,7 @@ const mockDestinations = [
 ];
 const mockOffers = [
   {
-    type: eventType[0],
+    type: TYPES_EVENTS[0],
     offers: [
       {
         id: 'offer01',
@@ -137,7 +137,7 @@ const mockOffers = [
     ],
   },
   {
-    type: eventType[1],
+    type: TYPES_EVENTS[1],
     offers: [
       {
         id: 'offer11',
@@ -147,7 +147,7 @@ const mockOffers = [
     ],
   },
   {
-    type: eventType[2],
+    type: TYPES_EVENTS[2],
     offers: [
       {
         id: 'offer21',
@@ -167,7 +167,7 @@ const mockOffers = [
     ],
   },
   {
-    type: eventType[3],
+    type: TYPES_EVENTS[3],
     offers: [
       {
         id: 'offer31',

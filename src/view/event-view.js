@@ -1,9 +1,10 @@
+import { DURATION_EVENT_TEMPLATE } from '../const';
 import { createElement } from '../render';
 import {
   getDuratiomAsString,
   getHoursFromString,
   getMinutesFromString,
-  normalizeEventDate,
+  normalizeDate,
 } from '../utils';
 
 const createListOffersTemplate = (offers) => {
@@ -32,11 +33,12 @@ const createListOffersTemplate = (offers) => {
 const createEventTemplate = ({ event, destination, offers }) => {
   const { dateFrom, dateTo, type, basePrice, isFavorite } = event;
   const name = destination?.name ?? '';
+  const dateEvent = { dueDate: dateFrom, template: DURATION_EVENT_TEMPLATE };
   return `
   <li class="trip-events__item">
     <div class="event">
       <time class="event__date" datetime="${dateFrom}">
-      ${normalizeEventDate(dateFrom)}</time>
+      ${normalizeDate(dateEvent)}</time>
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
       </div>

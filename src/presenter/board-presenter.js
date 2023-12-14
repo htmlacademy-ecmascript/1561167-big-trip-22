@@ -25,7 +25,7 @@ export default class BoardPresenter {
     this.boardEvents.forEach((item) => {
       const destination = this.destinationModel.getById(item.destination);
       const offers = this.offersModel.getSelectedOnes({
-        eventType: item.type,
+        TYPES_EVENTS: item.type,
         eventOffers: item.offers,
       });
       render(

@@ -5,11 +5,13 @@ export default class OffersModel {
     this.offers = loadOffers();
   }
 
-  getByType = (eventType) =>
-    eventType ? this.offers.find(({ type }) => type === eventType).offers : [];
+  getByType = (TYPES_EVENTS) =>
+    TYPES_EVENTS
+      ? this.offers.find(({ type }) => type === TYPES_EVENTS).offers
+      : [];
 
-  getSelectedOnes = ({ eventType, eventOffers }) => {
-    const offersObject = this.getByType(eventType);
+  getSelectedOnes = ({ TYPES_EVENTS, eventOffers }) => {
+    const offersObject = this.getByType(TYPES_EVENTS);
 
     if (!offersObject) {
       return [];

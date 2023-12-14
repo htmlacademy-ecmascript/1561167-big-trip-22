@@ -1,9 +1,13 @@
 import dayjs from 'dayjs';
 
-const DATE_TEMPLATE = 'MMM DD';
+const normalizeDate = (dateParameter) => {
+  if (!dateParameter) {
+    return '';
+  }
 
-const normalizeEventDate = (dueDate) =>
-  dueDate ? dayjs(dueDate).format(DATE_TEMPLATE) : '';
+  const { dueDate, template } = dateParameter;
+  return dayjs(dueDate).format(template);
+};
 
 const convertTwoDigitFormat = (number) => `0${number}`.slice(-2);
 
@@ -15,29 +19,21 @@ const getDuratiomAsString = (dateFrom, dateTo) => {
 
   return [
     !days ? '' : `${convertTwoDigitFormat(days)}D`,
-    !hours ? '' : `${convertTwoDigitFormat(hours)}H`,
-    !minutes ? '' : `${convertTwoDigitFormat(minutes)}M`,
+    !hours ? '00H' : `${convertTwoDigitFormat(hours)}H`,
+    !minutes ? '00M' : `${convertTwoDigitFormat(minutes)}M`,
   ].join(' ');
 };
 
-const getHoursFromString = (dateString) => {
-  const d = new Date(Date.parse(dateString));
+const getHoursFromString = (dateString) => dayjs(dateString).format('hh');
 
-  return convertTwoDigitFormat(d.getHours());
-};
-
-const getMinutesFromString = (dateString) => {
-  const d = new Date(Date.parse(dateString));
-
-  return convertTwoDigitFormat(d.getMinutes());
-};
+const getMinutesFromString = (dateString) => dayjs(dateString).format('mm');
 
 const getRandomArrayElement = (items) =>
   items[Math.floor(Math.random() * items.length)];
 
 export {
   getRandomArrayElement,
-  normalizeEventDate,
+  normalizeDate,
   getDuratiomAsString,
   getHoursFromString,
   getMinutesFromString,
