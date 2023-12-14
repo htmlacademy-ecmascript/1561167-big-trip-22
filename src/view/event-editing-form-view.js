@@ -1,6 +1,6 @@
 import { DATE_EVENT_TEMPLATE } from '../const';
 import { createElement } from '../render';
-import { normalizeDate } from '../utils';
+import { humanizeDate } from '../utils';
 
 const createPhotosTapeTemplate = (photos) => {
   const createPhotoTemplate = ({ src, description }) =>
@@ -164,11 +164,11 @@ const createEventEditingFormTemplate = ({
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
           <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time"
-          value="${normalizeDate(dateEventFrom)}">
+          value="${humanizeDate(dateEventFrom)}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
           <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time"
-          value="${normalizeDate(dateEventTo)}">
+          value="${humanizeDate(dateEventTo)}">
         </div>
 
         <div class="event__field-group  event__field-group--price">

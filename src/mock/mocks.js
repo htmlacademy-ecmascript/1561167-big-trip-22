@@ -15,9 +15,10 @@ const CITIES = ['Amsterdam', 'Chamonix', 'Geneva', 'Sofia'];
 const mockEvents = [
   {
     id: '00',
+    // 23M
     basePrice: 0,
-    dateFrom: '2019-07-10T11:22:13.375Z',
-    dateTo: '2019-07-10T11:32:13.375Z',
+    dateFrom: '2019-07-10T11:22Z',
+    dateTo: '2019-07-10T11:45Z',
     destination: 'dest0',
     isFavorite: false,
     offers: ['offer01'],
@@ -25,9 +26,10 @@ const mockEvents = [
   },
   {
     id: '11',
+    // 02H 00M
     basePrice: 1100,
-    dateFrom: '2019-07-12T22:55:56.845Z',
-    dateTo: '2019-07-13T11:22:13.375Z',
+    dateFrom: '2019-07-12T10:55Z',
+    dateTo: '2019-07-12T12:55Z',
     destination: 'dest1',
     isFavorite: true,
     offers: [],
@@ -35,9 +37,10 @@ const mockEvents = [
   },
   {
     id: '22',
+    // 01D 00H 00M
     basePrice: 2200,
-    dateFrom: '2019-07-14T22:55:56.845Z',
-    dateTo: '2019-07-18T11:22:13.375Z',
+    dateFrom: '2019-07-14T09:22Z',
+    dateTo: '2019-07-15T09:22Z',
     destination: 'dest2',
     isFavorite: false,
     offers: ['offer21', 'offer23'],
@@ -45,9 +48,10 @@ const mockEvents = [
   },
   {
     id: '33',
+    // 02D 01H 05M
     basePrice: 3300,
-    dateFrom: '2019-07-14T09:55:56.845Z',
-    dateTo: '2019-07-14T11:22:13.375Z',
+    dateFrom: '2019-07-14T09:50Z',
+    dateTo: '2019-07-16T10:55Z',
     destination: 'dest3',
     isFavorite: true,
     offers: ['offer31'],

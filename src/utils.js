@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 
-const normalizeDate = (dateParameter) => {
+const humanizeDate = (dateParameter) => {
   if (!dateParameter) {
     return '';
   }
@@ -11,30 +11,44 @@ const normalizeDate = (dateParameter) => {
 
 const convertTwoDigitFormat = (number) => `0${number}`.slice(-2);
 
-const getDuratiomAsString = (dateFrom, dateTo) => {
+const humanizeDuration = ({ dateFrom, dateTo }) => {
   const duration = Date.parse(dateTo) - Date.parse(dateFrom);
   const minutes = Math.floor((duration / 1000 / 60) % 60);
   const hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
   const days = Math.floor(duration / (1000 * 60 * 60 * 24));
 
-  return [
-    !days ? '' : `${convertTwoDigitFormat(days)}D`,
-    !hours ? '00H' : `${convertTwoDigitFormat(hours)}H`,
-    !minutes ? '00M' : `${convertTwoDigitFormat(minutes)}M`,
-  ].join(' ');
+  if (days >= 1) {
+    return `${convertTwoDigitFormat(days)}D ${convertTwoDigitFormat(
+      hours
+    )}H ${convertTwoDigitFormat(minutes)}M`;
+  }
+  if (hours >= 1) {
+    return `${convertTwoDigitFormat(hours)}H ${convertTwoDigitFormat(
+      minutes
+    )}M`;
+  }
+  return `${convertTwoDigitFormat(minutes)}M`;
 };
 
-const getHoursFromString = (dateString) => dayjs(dateString).format('hh');
+const getHoursFromString = (dateString) => {
+  const d = new Date(Date.parse(dateString));
 
-const getMinutesFromString = (dateString) => dayjs(dateString).format('mm');
+  return convertTwoDigitFormat(d.getHours());
+};
+
+const getMinutesFromString = (dateString) => {
+  const d = new Date(Date.parse(dateString));
+
+  return convertTwoDigitFormat(d.getMinutes());
+};
 
 const getRandomArrayElement = (items) =>
   items[Math.floor(Math.random() * items.length)];
 
 export {
   getRandomArrayElement,
-  normalizeDate,
-  getDuratiomAsString,
+  humanizeDate,
+  humanizeDuration,
   getHoursFromString,
   getMinutesFromString,
 };

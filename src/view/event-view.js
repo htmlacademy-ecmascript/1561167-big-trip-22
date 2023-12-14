@@ -1,10 +1,10 @@
 import { DURATION_EVENT_TEMPLATE } from '../const';
 import { createElement } from '../render';
 import {
-  getDuratiomAsString,
+  humanizeDuration,
   getHoursFromString,
   getMinutesFromString,
-  normalizeDate,
+  humanizeDate,
 } from '../utils';
 
 const createListOffersTemplate = (offers) => {
@@ -38,7 +38,7 @@ const createEventTemplate = ({ event, destination, offers }) => {
   <li class="trip-events__item">
     <div class="event">
       <time class="event__date" datetime="${dateFrom}">
-      ${normalizeDate(dateEvent)}</time>
+      ${humanizeDate(dateEvent)}</time>
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
       </div>
@@ -52,7 +52,9 @@ const createEventTemplate = ({ event, destination, offers }) => {
           <time class="event__end-time" datetime="${dateTo}">
           ${getHoursFromString(dateTo)}:${getMinutesFromString(dateTo)}</time>
         </p>
-        <p class="event__duration">${getDuratiomAsString(dateFrom, dateTo)}</p>
+        <p class="event__duration">
+          ${humanizeDuration({ dateFrom, dateTo })}
+        </p>
       </div>
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
