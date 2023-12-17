@@ -1,45 +1,41 @@
 import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import {
+  MSEC_IN_DAY,
+  MSEC_IN_HOUR,
+  AVERAGE_EVENT_DURATION_TEMPLATE,
+  LONG_EVENT_DURATION_TEMPLATE,
+  SHORT_DATE_TEMPLATE,
+  SHORT_EVENT_DURATION_TEMPLATE,
+  TIME_TEMPLATE,
+  DATE_EVENT_TEMPLATE,
+} from './const';
 
-const humanizeDate = (dateParameter) => {
-  if (!dateParameter) {
-    return '';
+dayjs.extend(duration);
+dayjs.extend(relativeTime);
+
+const humanizeDateCalendarFormat = (date) =>
+  date ? dayjs(date).format(DATE_EVENT_TEMPLATE) : '';
+
+const humanizeDateTimeFormat = (date) =>
+  date ? dayjs(date).format(TIME_TEMPLATE) : '';
+
+const humanizeDateShortFormat = (date) =>
+  date ? dayjs(date).format(SHORT_DATE_TEMPLATE) : '';
+
+const humanizeDurationEvent = ({ dateFrom, dateTo }) => {
+  const diffTimeshtamp = dayjs(dateTo).diff(dayjs(dateFrom));
+
+  if (diffTimeshtamp >= MSEC_IN_DAY) {
+    return dayjs.duration(diffTimeshtamp).format(LONG_EVENT_DURATION_TEMPLATE);
   }
-
-  const { dueDate, template } = dateParameter;
-  return dayjs(dueDate).format(template);
-};
-
-const convertTwoDigitFormat = (number) => `0${number}`.slice(-2);
-
-const humanizeDuration = ({ dateFrom, dateTo }) => {
-  const duration = Date.parse(dateTo) - Date.parse(dateFrom);
-  const minutes = Math.floor((duration / 1000 / 60) % 60);
-  const hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
-  const days = Math.floor(duration / (1000 * 60 * 60 * 24));
-
-  if (days >= 1) {
-    return `${convertTwoDigitFormat(days)}D ${convertTwoDigitFormat(
-      hours
-    )}H ${convertTwoDigitFormat(minutes)}M`;
+  if (diffTimeshtamp >= MSEC_IN_HOUR) {
+    return dayjs
+      .duration(diffTimeshtamp)
+      .format(AVERAGE_EVENT_DURATION_TEMPLATE);
   }
-  if (hours >= 1) {
-    return `${convertTwoDigitFormat(hours)}H ${convertTwoDigitFormat(
-      minutes
-    )}M`;
-  }
-  return `${convertTwoDigitFormat(minutes)}M`;
-};
-
-const getHoursFromString = (dateString) => {
-  const d = new Date(Date.parse(dateString));
-
-  return convertTwoDigitFormat(d.getHours());
-};
-
-const getMinutesFromString = (dateString) => {
-  const d = new Date(Date.parse(dateString));
-
-  return convertTwoDigitFormat(d.getMinutes());
+  return dayjs.duration(diffTimeshtamp).format(SHORT_EVENT_DURATION_TEMPLATE);
 };
 
 const getRandomArrayElement = (items) =>
@@ -47,8 +43,8 @@ const getRandomArrayElement = (items) =>
 
 export {
   getRandomArrayElement,
-  humanizeDate,
-  humanizeDuration,
-  getHoursFromString,
-  getMinutesFromString,
+  humanizeDateCalendarFormat,
+  humanizeDurationEvent,
+  humanizeDateShortFormat,
+  humanizeDateTimeFormat,
 };

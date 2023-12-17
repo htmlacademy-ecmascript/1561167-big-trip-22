@@ -1,6 +1,5 @@
-import { DATE_EVENT_TEMPLATE } from '../const';
 import { createElement } from '../render';
-import { humanizeDate } from '../utils';
+import { humanizeDateCalendarFormat } from '../utils';
 
 const createPhotosTapeTemplate = (photos) => {
   const createPhotoTemplate = ({ src, description }) =>
@@ -84,12 +83,7 @@ const createEventEditingFormTemplate = ({
   offers,
   event,
 }) => {
-  const dateEventFrom = event
-    ? { dueDate: event.dateFrom, template: DATE_EVENT_TEMPLATE }
-    : null;
-  const dateEventTo = event
-    ? { dueDate: event.dateTo, template: DATE_EVENT_TEMPLATE }
-    : null;
+  const { dateFrom, dateTo, type } = event ?? {};
   return `
   <li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -155,7 +149,7 @@ const createEventEditingFormTemplate = ({
 
         <div class="event__field-group  event__field-group--destination">
           <label class="event__label  event__type-output" for="event-destination-1">
-            ${event ? event.type : 'Flight'}
+            ${type ? type : 'Flight'}
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Chamonix" list="destination-list-1">
           ${createListTitlesTemplate(titles)}
@@ -164,11 +158,11 @@ const createEventEditingFormTemplate = ({
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
           <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time"
-          value="${humanizeDate(dateEventFrom)}">
+          value="${humanizeDateCalendarFormat(dateFrom)}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
           <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time"
-          value="${humanizeDate(dateEventTo)}">
+          value="${humanizeDateCalendarFormat(dateTo)}">
         </div>
 
         <div class="event__field-group  event__field-group--price">

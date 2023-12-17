@@ -1,10 +1,9 @@
-import { DURATION_EVENT_TEMPLATE } from '../const';
+// import { DURATION_EVENT_TEMPLATE } from '../const';
 import { createElement } from '../render';
 import {
-  humanizeDuration,
-  getHoursFromString,
-  getMinutesFromString,
-  humanizeDate,
+  humanizeDurationEvent,
+  humanizeDateShortFormat,
+  humanizeDateTimeFormat,
 } from '../utils';
 
 const getTotalCostOffers = (offers) => {
@@ -40,12 +39,12 @@ const createListOffersTemplate = (offers) => {
 const createEventTemplate = ({ event, destination, offers }) => {
   const { dateFrom, dateTo, type, basePrice, isFavorite } = event;
   const name = destination?.name ?? '';
-  const dateEvent = { dueDate: dateFrom, template: DURATION_EVENT_TEMPLATE };
+  // const dateEvent = { dueDate: dateFrom, template: DURATION_EVENT_TEMPLATE };
   return `
   <li class="trip-events__item">
     <div class="event">
       <time class="event__date" datetime="${dateFrom}">
-      ${humanizeDate(dateEvent)}</time>
+      ${humanizeDateShortFormat(dateFrom)}</time>
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
       </div>
@@ -53,14 +52,13 @@ const createEventTemplate = ({ event, destination, offers }) => {
       <div class="event__schedule">
         <p class="event__time">
           <time class="event__start-time" datetime="${dateFrom}">
-          ${getHoursFromString(dateFrom)}:
-          ${getMinutesFromString(dateFrom)}</time>
+          ${humanizeDateTimeFormat(dateFrom)}</time>
           &mdash;
           <time class="event__end-time" datetime="${dateTo}">
-          ${getHoursFromString(dateTo)}:${getMinutesFromString(dateTo)}</time>
+          ${humanizeDateTimeFormat(dateTo)}</time>
         </p>
         <p class="event__duration">
-          ${humanizeDuration({ dateFrom, dateTo })}
+          ${humanizeDurationEvent({ dateFrom, dateTo })}
         </p>
       </div>
       <p class="event__price">
