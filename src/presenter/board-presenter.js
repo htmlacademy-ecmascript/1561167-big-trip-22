@@ -22,10 +22,21 @@ export default class BoardPresenter {
     render(new ListSortView(), this.boardContainer);
     render(this.eventsContainerComponent, this.boardContainer);
 
+    const newEvent = {};
+    render(
+      new EventEditingFormView({
+        titles: this.destinationModel.getNames(),
+        event: newEvent,
+        offers: this.offersModel.getByType(newEvent?.type),
+        destination: this.destinationModel.getById(newEvent?.destination),
+      }),
+      this.eventsContainerComponent.getElement()
+    );
+
     this.boardEvents.forEach((item) => {
       const destination = this.destinationModel.getById(item.destination);
       const offers = this.offersModel.getSelectedOnes({
-        TYPES_EVENTS: item.type,
+        eventType: item.type,
         eventOffers: item.offers,
       });
       render(

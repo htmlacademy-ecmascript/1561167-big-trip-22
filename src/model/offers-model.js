@@ -1,3 +1,4 @@
+import { PRESET_EVENT_POINT_TYPE } from '../const';
 import { loadOffers } from '../mock/mocks';
 
 export default class OffersModel {
@@ -5,18 +6,12 @@ export default class OffersModel {
     this.offers = loadOffers();
   }
 
-  getByType = (TYPES_EVENTS) =>
-    TYPES_EVENTS
-      ? this.offers.find(({ type }) => type === TYPES_EVENTS).offers
-      : [];
+  getByType = (eventType = PRESET_EVENT_POINT_TYPE) =>
+    this.offers.find(({ type }) => type === eventType).offers;
 
-  getSelectedOnes = ({ TYPES_EVENTS, eventOffers }) => {
-    const offersObject = this.getByType(TYPES_EVENTS);
+  getSelectedOnes = ({ eventType, eventOffers }) => {
+    const offers = this.getByType(eventType);
 
-    if (!offersObject) {
-      return [];
-    }
-
-    return offersObject.filter(({ id }) => eventOffers.includes(id));
+    return offers.filter(({ id }) => eventOffers.includes(id));
   };
 }

@@ -9,6 +9,7 @@ const TYPES_EVENTS = [
   'Sightseeing',
   'Restaurant',
 ];
+const PRESET_EVENT_POINT_TYPE = TYPES_EVENTS[5];
 
 const MSEC_IN_SEC = 1000;
 const SEC_IN_MIN = 60;
@@ -27,6 +28,7 @@ const DATE_EVENT_TEMPLATE = 'DD/MM/YY hh:mm';
 
 export {
   TYPES_EVENTS,
+  PRESET_EVENT_POINT_TYPE,
   SHORT_DATE_TEMPLATE,
   DATE_EVENT_TEMPLATE,
   TIME_TEMPLATE,

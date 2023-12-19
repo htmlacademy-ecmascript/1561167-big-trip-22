@@ -62,7 +62,7 @@ const mockDestinations = [
   {
     id: 'dest0',
     description: getRandomArrayElement(LOREMS),
-    name: CITIES[1],
+    name: CITIES[0],
     pictures: [
       {
         src: `https://loremflickr.com/248/152?random=${Math.random()}`,
@@ -73,7 +73,7 @@ const mockDestinations = [
   {
     id: 'dest1',
     description: getRandomArrayElement(LOREMS),
-    name: getRandomArrayElement(CITIES),
+    name: CITIES[1],
     pictures: [
       {
         src: `https://loremflickr.com/248/152?random=${Math.random()}`,
@@ -84,7 +84,7 @@ const mockDestinations = [
   {
     id: 'dest2',
     description: getRandomArrayElement(LOREMS) + getRandomArrayElement(LOREMS),
-    name: getRandomArrayElement(CITIES),
+    name: CITIES[2],
     pictures: [
       {
         src: `https://loremflickr.com/248/152?random=${Math.random()}`,
@@ -115,7 +115,7 @@ const mockDestinations = [
   {
     id: 'dest3',
     description: getRandomArrayElement(LOREMS),
-    name: getRandomArrayElement(CITIES),
+    name: CITIES[3],
     pictures: [
       {
         src: `https://loremflickr.com/248/152?random=${Math.random()}`,
@@ -177,6 +177,31 @@ const mockOffers = [
         id: 'offer31',
         title: 'Upgrade to a business class',
         price: 31,
+      },
+    ],
+  },
+  {
+    type: TYPES_EVENTS[5],
+    offers: [
+      {
+        id: 'offer51',
+        title: 'Upgrade to a business class',
+        price: 51,
+      },
+      {
+        id: 'offer52',
+        title: 'Upgrade to',
+        price: 52,
+      },
+      {
+        id: 'offer53',
+        title: 'Upgrade to a business',
+        price: 53,
+      },
+      {
+        id: 'offer54',
+        title: 'Upgrade to a business class',
+        price: 54,
       },
     ],
   },

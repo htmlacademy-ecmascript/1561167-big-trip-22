@@ -1,4 +1,3 @@
-// import { DURATION_EVENT_TEMPLATE } from '../const';
 import { createElement } from '../render';
 import {
   humanizeDurationEvent,
@@ -11,8 +10,9 @@ const getTotalCostOffers = (offers) => {
     return 0;
   }
 
-  return offers.reduce((acc, item) => (acc += item.price), 0);
+  return offers.reduce((acc, item) => acc + item.price, 0);
 };
+
 const createListOffersTemplate = (offers) => {
   if (!offers.length) {
     return '';
