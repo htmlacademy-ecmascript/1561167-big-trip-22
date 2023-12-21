@@ -1,8 +1,8 @@
 import { PRESET_EVENT_POINT_TYPE, TYPES_EVENTS } from '../const';
-import { createElement } from '../render';
+import AbstractView from '../framework/view/abstract-view';
 import { humanizeDateCalendarFormat } from '../utils';
 
-const createEventTypeList = (type = TYPES_EVENTS[5]) => {
+const createEventTypeList = (type = PRESET_EVENT_POINT_TYPE) => {
   const createEventTypeItem = (item) => `
   <div class="event__type-item">
     <input id="event-type-${item.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${item.toLowerCase()}"
@@ -181,31 +181,26 @@ const createEventEditingFormTemplate = ({
 `;
 };
 
-export default class EventEditingFormView {
+export default class EventEditingFormView extends AbstractView {
+  #titles = null;
+  #destination = null;
+  #offers = null;
+  #event = null;
+
   constructor({ titles, destination, offers, event }) {
-    this.titles = titles;
-    this.destination = destination;
-    this.offers = offers;
-    this.event = event;
+    super();
+    this.#titles = titles;
+    this.#destination = destination;
+    this.#offers = offers;
+    this.#event = event;
   }
 
-  getTemplate = () =>
-    createEventEditingFormTemplate({
-      titles: this.titles,
-      destination: this.destination,
-      offers: this.offers,
-      event: this.event,
+  get template() {
+    return createEventEditingFormTemplate({
+      titles: this.#titles,
+      destination: this.#destination,
+      offers: this.#offers,
+      event: this.#event,
     });
-
-  getElement = () => {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  };
-
-  removeElement = () => {
-    this.element = null;
-  };
+  }
 }

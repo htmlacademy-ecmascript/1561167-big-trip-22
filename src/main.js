@@ -2,7 +2,7 @@ import EventsModel from './model/events-model';
 import DestinationsModel from './model/destinations-model';
 import OffersModel from './model/offers-model';
 import BoardPresenter from './presenter/board-presenter';
-import { render } from './render';
+import { render } from './framework/render';
 import ListFilterView from './view/list-filter-view';
 
 const tripHeaderNode = document.querySelector('.trip-main');

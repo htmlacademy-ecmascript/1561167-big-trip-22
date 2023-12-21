@@ -1,4 +1,4 @@
-import { render } from '../render';
+import { render } from '../framework/render';
 import EventsContainerView from '../view/events-container-view';
 import ListSortView from '../view/list-sort-view';
 import EventView from '../view/event-view';
@@ -30,7 +30,7 @@ export default class BoardPresenter {
         offers: this.offersModel.getByType(newEvent?.type),
         destination: this.destinationModel.getById(newEvent?.destination),
       }),
-      this.eventsContainerComponent.getElement()
+      this.eventsContainerComponent.element
     );
 
     this.boardEvents.forEach((item) => {
@@ -41,7 +41,7 @@ export default class BoardPresenter {
       });
       render(
         new EventView({ event: item, destination, offers }),
-        this.eventsContainerComponent.getElement()
+        this.eventsContainerComponent.element
       );
     });
     // const event = null;
@@ -54,7 +54,7 @@ export default class BoardPresenter {
         offers: this.offersModel.getByType(event?.type),
         destination: eventDestination,
       }),
-      this.eventsContainerComponent.getElement()
+      this.eventsContainerComponent.element
     );
   }
 }

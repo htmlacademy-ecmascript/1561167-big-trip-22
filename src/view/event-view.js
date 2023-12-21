@@ -1,4 +1,4 @@
-import { createElement } from '../render';
+import AbstractView from '../framework/view/abstract-view';
 import {
   humanizeDurationEvent,
   humanizeDateShortFormat,
@@ -39,7 +39,6 @@ const createListOffersTemplate = (offers) => {
 const createEventTemplate = ({ event, destination, offers }) => {
   const { dateFrom, dateTo, type, basePrice, isFavorite } = event;
   const name = destination?.name ?? '';
-  // const dateEvent = { dueDate: dateFrom, template: DURATION_EVENT_TEMPLATE };
   return `
   <li class="trip-events__item">
     <div class="event">
@@ -82,29 +81,23 @@ const createEventTemplate = ({ event, destination, offers }) => {
 `;
 };
 
-export default class EventView {
+export default class EventView extends AbstractView {
+  #event = null;
+  #destination = null;
+  #offers = null;
+
   constructor({ event, destination, offers }) {
-    this.event = event;
-    this.destination = destination;
-    this.offers = offers;
+    super();
+    this.#event = event;
+    this.#destination = destination;
+    this.#offers = offers;
   }
 
-  getTemplate = () =>
-    createEventTemplate({
-      event: this.event,
-      destination: this.destination,
-      offers: this.offers,
+  get template() {
+    return createEventTemplate({
+      event: this.#event,
+      destination: this.#destination,
+      offers: this.#offers,
     });
-
-  getElement = () => {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  };
-
-  removeElement = () => {
-    this.element = null;
-  };
+  }
 }
