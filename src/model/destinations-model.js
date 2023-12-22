@@ -1,14 +1,20 @@
 import { loadDestinations } from '../mock/mocks';
 
 export default class DestinationsModel {
+  #destinations = null;
+
   constructor() {
-    this.destinations = loadDestinations();
+    this.#destinations = loadDestinations();
   }
 
-  getList = () => this.destinations;
+  get list() {
+    return this.#destinations;
+  }
 
-  getNames = () => this.destinations.map(({ name }) => name);
+  get names() {
+    return this.#destinations.map(({ name }) => name);
+  }
 
   getById = (destinationId) =>
-    this.destinations.find(({ id }) => id === destinationId);
+    this.#destinations.find(({ id }) => id === destinationId);
 }

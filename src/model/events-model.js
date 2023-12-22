@@ -1,19 +1,18 @@
+import { TEST_EVENTS_COUNT, TEST_EVENT_ID } from '../const';
 import { loadRandomEvent } from '../mock/mocks';
 
-const EVENTS_COUNT = 5;
-
 export default class EventsModel {
+  #events = null;
+
   constructor() {
-    this.events = Array.from({ length: EVENTS_COUNT }, loadRandomEvent);
+    do {
+      this.#events = Array.from({ length: TEST_EVENTS_COUNT }, loadRandomEvent);
+    } while (!this.#events.find(({ id }) => id === TEST_EVENT_ID));
   }
 
-  getAll = () => this.events;
+  get all() {
+    return this.#events;
+  }
 
-  getById = (eventId) => {
-    if (!eventId) {
-      return undefined;
-    }
-
-    return this.events.find(({ id }) => id === eventId);
-  };
+  getById = (eventId) => this.#events.find(({ id }) => id === eventId);
 }
