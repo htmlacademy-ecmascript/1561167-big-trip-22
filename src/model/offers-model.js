@@ -8,6 +8,10 @@ export default class OffersModel {
     this.#offers = loadOffers();
   }
 
+  get all() {
+    return this.#offers;
+  }
+
   getByType = (eventType = PRESET_EVENT_POINT_TYPE) =>
     this.#offers.find(({ type }) => type === eventType).offers;
 

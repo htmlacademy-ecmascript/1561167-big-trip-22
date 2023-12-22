@@ -7,7 +7,7 @@ export default class DestinationsModel {
     this.#destinations = loadDestinations();
   }
 
-  get list() {
+  get all() {
     return this.#destinations;
   }
 

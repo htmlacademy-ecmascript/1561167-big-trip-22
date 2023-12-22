@@ -1,15 +1,24 @@
-import { render } from '../framework/render';
+import { RenderPosition, render } from '../framework/render';
 import EventsContainerView from '../view/events-container-view';
+import ListFilterView from '../view/list-filter-view';
 import ListSortView from '../view/list-sort-view';
 import EventView from '../view/event-view';
 import EventEditingFormView from '../view/event-editing-form-view';
 import { TEST_EVENT_ID } from '../const';
+import InformationTripView from '../view/information-trip-view';
+
+const tripHeaderNode = document.querySelector('.trip-main');
+const filterContainerNode = tripHeaderNode.querySelector(
+  '.trip-controls__filters'
+);
 
 export default class BoardPresenter {
   #boardContainer = null;
   #eventsModel = null;
   #destinationModel = null;
   #offersModel = null;
+  #filterContainerNode = null;
+  #tripHeaderNode = null;
 
   #eventsContainerComponent = new EventsContainerView();
   #boardEvents = [];
@@ -24,9 +33,23 @@ export default class BoardPresenter {
   }
 
   init() {
+    this.#tripHeaderNode = tripHeaderNode;
+    this.#filterContainerNode = filterContainerNode;
+
     this.#boardEvents = this.#eventsModel.all;
 
+    render(
+      new InformationTripView({
+        events: this.#boardEvents,
+        offers: this.#offersModel.all,
+        destinations: this.#destinationModel.all,
+      }),
+      this.#tripHeaderNode,
+      RenderPosition.AFTERBEGIN
+    );
+    render(new ListFilterView(), this.#filterContainerNode);
     render(new ListSortView(), this.#boardContainer);
+
     render(this.#eventsContainerComponent, this.#boardContainer);
 
     const newEvent = {};

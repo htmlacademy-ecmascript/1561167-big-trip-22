@@ -6,7 +6,7 @@ import {
   MSEC_IN_HOUR,
   AVERAGE_EVENT_DURATION_TEMPLATE,
   LONG_EVENT_DURATION_TEMPLATE,
-  SHORT_DATE_TEMPLATE,
+  INVERTED_SHORT_DATE_TEMPLATE,
   SHORT_EVENT_DURATION_TEMPLATE,
   TIME_TEMPLATE,
   DATE_EVENT_TEMPLATE,
@@ -21,8 +21,10 @@ const humanizeDateCalendarFormat = (date) =>
 const humanizeDateTimeFormat = (date) =>
   date ? dayjs(date).format(TIME_TEMPLATE) : '';
 
-const humanizeDateShortFormat = (date) =>
-  date ? dayjs(date).format(SHORT_DATE_TEMPLATE) : '';
+const humanizeDateShortFormat = (
+  date,
+  template = INVERTED_SHORT_DATE_TEMPLATE
+) => (date ? dayjs(date).format(template) : '');
 
 const humanizeDurationEvent = ({ dateFrom, dateTo }) => {
   const diffTimeshtamp = dayjs(dateTo).diff(dayjs(dateFrom));
