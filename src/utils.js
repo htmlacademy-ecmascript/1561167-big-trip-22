@@ -43,10 +43,13 @@ const humanizeDurationEvent = ({ dateFrom, dateTo }) => {
 const getRandomArrayElement = (items) =>
   items[Math.floor(Math.random() * items.length)];
 
+const isEscKeyPressed = (key) => key === 'Escape';
+
 export {
   getRandomArrayElement,
   humanizeDateCalendarFormat,
   humanizeDurationEvent,
   humanizeDateShortFormat,
   humanizeDateTimeFormat,
+  isEscKeyPressed,
 };

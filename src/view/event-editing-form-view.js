@@ -186,13 +186,34 @@ export default class EventEditingFormView extends AbstractView {
   #destination = null;
   #offers = null;
   #event = null;
+  #onEditingFormClick = null;
+  #enEditingFormSubmit = null;
 
-  constructor({ titles, destination, offers, event }) {
+  constructor(formPparameters) {
+    const {
+      titles,
+      destination,
+      offers,
+      event,
+      onEditingFormClick,
+      enEditingFormSubmit,
+    } = formPparameters;
+
     super();
     this.#titles = titles;
     this.#destination = destination;
     this.#offers = offers;
     this.#event = event;
+    this.#onEditingFormClick = onEditingFormClick;
+    this.#enEditingFormSubmit = enEditingFormSubmit;
+
+    this.element
+      .querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#closingFormClickHandler);
+
+    this.element
+      .querySelector('form')
+      .addEventListener('submit', this.#formSubmitHandler);
   }
 
   get template() {
@@ -203,4 +224,14 @@ export default class EventEditingFormView extends AbstractView {
       event: this.#event,
     });
   }
+
+  #closingFormClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#onEditingFormClick();
+  };
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#enEditingFormSubmit();
+  };
 }

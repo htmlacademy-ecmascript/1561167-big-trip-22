@@ -1,11 +1,12 @@
-import { RenderPosition, render } from '../framework/render';
+import { RenderPosition, render, replace } from '../framework/render';
 import EventsContainerView from '../view/events-container-view';
 import ListFilterView from '../view/list-filter-view';
 import ListSortView from '../view/list-sort-view';
 import EventView from '../view/event-view';
 import EventEditingFormView from '../view/event-editing-form-view';
-import { TEST_EVENT_ID } from '../const';
+// import { TEST_EVENT_ID } from '../const';
 import InformationTripView from '../view/information-trip-view';
+import { isEscKeyPressed } from '../utils';
 
 const tripHeaderNode = document.querySelector('.trip-main');
 const filterContainerNode = tripHeaderNode.querySelector(
@@ -52,42 +53,76 @@ export default class BoardPresenter {
 
     render(this.#eventsContainerComponent, this.#boardContainer);
 
-    const newEvent = {};
-    render(
-      new EventEditingFormView({
-        titles: this.#destinationModel.names,
-        event: newEvent,
-        offers: this.#offersModel.getByType(newEvent?.type),
-        destination: this.#destinationModel.getById(newEvent?.destination),
-      }),
-      this.#eventsContainerComponent.element
-    );
+    // const newEvent = {};
+    // render(
+    //   new EventEditingFormView({
+    //     titles: this.#destinationModel.names,
+    //     event: newEvent,
+    //     offers: this.#offersModel.getByType(newEvent?.type),
+    //     destination: this.#destinationModel.getById(newEvent?.destination),
+    //   }),
+    //   this.#eventsContainerComponent.element
+    // );
 
     this.#boardEvents.forEach((itemEvent) => this.#renderEvent(itemEvent));
 
-    const event = this.#eventsModel.getById(TEST_EVENT_ID);
-    const eventDestination = this.#destinationModel.getById(event?.destination);
-    render(
-      new EventEditingFormView({
-        titles: this.#destinationModel.names,
-        event,
-        offers: this.#offersModel.getByType(event?.type),
-        destination: eventDestination,
-      }),
-      this.#eventsContainerComponent.element
-    );
+    // const event = this.#eventsModel.getById(TEST_EVENT_ID);
+    // const eventDestination = this.#destinationModel.getById(event?.destination);
+    // render(
+    //   new EventEditingFormView({
+    //     titles: this.#destinationModel.names,
+    //     event,
+    //     offers: this.#offersModel.getByType(event?.type),
+    //     destination: eventDestination,
+    //   }),
+    //   this.#eventsContainerComponent.element
+    // );
   }
 
   #renderEvent = (event) => {
+    const escapeKeyDownHandler = (evt) => {
+      if (!isEscKeyPressed(evt.key)) {
+        return;
+      }
+      evt.preventDefault();
+      replaceEditFormToPoint();
+      document.removeEventListener('keydown', escapeKeyDownHandler);
+    };
     const destination = this.#destinationModel.getById(event.destination);
-    const offers = this.#offersModel.getSelectedOnes({
+    const eventOffers = this.#offersModel.getSelectedOnes({
       eventType: event.type,
       eventOffers: event.offers,
     });
+    const eventComponent = new EventView({
+      event,
+      destination,
+      offers: eventOffers,
+      onEditEventClick: () => {
+        replacePointToEditForm();
+        document.addEventListener('keydown', escapeKeyDownHandler);
+      },
+    });
+    const eventEditingFormComponent = new EventEditingFormView({
+      event,
+      destination,
+      titles: this.#destinationModel.names,
+      offers: this.#offersModel.getByType(event.type),
+      onEditingFormClick: () => {
+        replaceEditFormToPoint();
+        document.addEventListener('keydown', escapeKeyDownHandler);
+      },
+      enEditingFormSubmit: () => {
+        //TODO - ОБРАБОТКА ОТПРАВКМ ФОРМЫ
+        replaceEditFormToPoint();
+      },
+    });
+    function replacePointToEditForm() {
+      replace(eventEditingFormComponent, eventComponent);
+    }
+    function replaceEditFormToPoint() {
+      replace(eventComponent, eventEditingFormComponent);
+    }
 
-    render(
-      new EventView({ event, destination, offers }),
-      this.#eventsContainerComponent.element
-    );
+    render(eventComponent, this.#eventsContainerComponent.element);
   };
 }
