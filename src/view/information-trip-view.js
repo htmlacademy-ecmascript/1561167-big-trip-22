@@ -1,6 +1,6 @@
 import { DAY_MONTH_TEMPLATE, SHORT_DATE_TEMPLATE } from '../const';
 import AbstractView from '../framework/view/abstract-view';
-import { humanizeDateShortFormat } from '../utils';
+import { humanizeDateShortFormat } from '../utils/events';
 
 const getGlobalCostTrip = ({ events, offers: allOffers }) => {
   const getAmountOffers = ({
@@ -61,14 +61,18 @@ const getInitialFinalDestination = ({ events, destinations }) => {
 };
 
 const createInformationTripTemplate = ({ events, offers, destinations }) => {
-  const isEmpty = events.length === 0;
-  const finalDateEvents = !isEmpty ? events[events.length - 1].dateTo : 0;
-  const initialDate = !isEmpty
-    ? humanizeDateShortFormat(events[0].dateFrom, DAY_MONTH_TEMPLATE)
-    : '';
-  const finalDate = !isEmpty
-    ? humanizeDateShortFormat(finalDateEvents, SHORT_DATE_TEMPLATE)
-    : '';
+  if (!events.length) {
+    return '';
+  }
+
+  const initialDate = humanizeDateShortFormat(
+    events[0].dateFrom,
+    DAY_MONTH_TEMPLATE
+  );
+  const finalDate = humanizeDateShortFormat(
+    events[events.length - 1].dateTo,
+    SHORT_DATE_TEMPLATE
+  );
   const title = getInitialFinalDestination({
     events,
     destinations,

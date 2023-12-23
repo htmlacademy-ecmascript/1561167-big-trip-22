@@ -4,29 +4,32 @@ import ListFilterView from '../view/list-filter-view';
 import ListSortView from '../view/list-sort-view';
 import EventView from '../view/event-view';
 import EventEditingFormView from '../view/event-editing-form-view';
-// import { TEST_EVENT_ID } from '../const';
 import InformationTripView from '../view/information-trip-view';
-import { isEscKeyPressed } from '../utils';
-
-const tripHeaderNode = document.querySelector('.trip-main');
-const filterContainerNode = tripHeaderNode.querySelector(
-  '.trip-controls__filters'
-);
+import NoEventsView from '../view/no-events-view';
+import { isEscapeKey } from '../utils/common';
 
 export default class BoardPresenter {
   #boardContainer = null;
   #eventsModel = null;
   #destinationModel = null;
   #offersModel = null;
-  #filterContainerNode = null;
-  #tripHeaderNode = null;
+  #filterContainer = null;
+  #tripHeaderContainer = null;
 
   #eventsContainerComponent = new EventsContainerView();
   #boardEvents = [];
 
   constructor(board) {
-    const { boardContainer, eventsModel, destinationsModel, offerrsModel } =
-      board;
+    const {
+      tripHeaderContainer,
+      filterContainer,
+      boardContainer,
+      eventsModel,
+      destinationsModel,
+      offerrsModel,
+    } = board;
+    this.#tripHeaderContainer = tripHeaderContainer;
+    this.#filterContainer = filterContainer;
     this.#boardContainer = boardContainer;
     this.#eventsModel = eventsModel;
     this.#destinationModel = destinationsModel;
@@ -34,10 +37,17 @@ export default class BoardPresenter {
   }
 
   init() {
-    this.#tripHeaderNode = tripHeaderNode;
-    this.#filterContainerNode = filterContainerNode;
-
     this.#boardEvents = this.#eventsModel.all;
+
+    render(new ListFilterView(), this.#filterContainer);
+    this.#renderBoard();
+  }
+
+  #renderBoard = () => {
+    if (this.#eventsModel.isEmpty) {
+      render(new NoEventsView(), this.#boardContainer);
+      return;
+    }
 
     render(
       new InformationTripView({
@@ -45,43 +55,18 @@ export default class BoardPresenter {
         offers: this.#offersModel.all,
         destinations: this.#destinationModel.all,
       }),
-      this.#tripHeaderNode,
+      this.#tripHeaderContainer,
       RenderPosition.AFTERBEGIN
     );
-    render(new ListFilterView(), this.#filterContainerNode);
+
     render(new ListSortView(), this.#boardContainer);
-
     render(this.#eventsContainerComponent, this.#boardContainer);
-
-    // const newEvent = {};
-    // render(
-    //   new EventEditingFormView({
-    //     titles: this.#destinationModel.names,
-    //     event: newEvent,
-    //     offers: this.#offersModel.getByType(newEvent?.type),
-    //     destination: this.#destinationModel.getById(newEvent?.destination),
-    //   }),
-    //   this.#eventsContainerComponent.element
-    // );
-
     this.#boardEvents.forEach((itemEvent) => this.#renderEvent(itemEvent));
-
-    // const event = this.#eventsModel.getById(TEST_EVENT_ID);
-    // const eventDestination = this.#destinationModel.getById(event?.destination);
-    // render(
-    //   new EventEditingFormView({
-    //     titles: this.#destinationModel.names,
-    //     event,
-    //     offers: this.#offersModel.getByType(event?.type),
-    //     destination: eventDestination,
-    //   }),
-    //   this.#eventsContainerComponent.element
-    // );
-  }
+  };
 
   #renderEvent = (event) => {
     const escapeKeyDownHandler = (evt) => {
-      if (!isEscKeyPressed(evt.key)) {
+      if (!isEscapeKey(evt)) {
         return;
       }
       evt.preventDefault();
@@ -109,11 +94,12 @@ export default class BoardPresenter {
       offers: this.#offersModel.getByType(event.type),
       onEditingFormClick: () => {
         replaceEditFormToPoint();
-        document.addEventListener('keydown', escapeKeyDownHandler);
+        document.removeEventListener('keydown', escapeKeyDownHandler);
       },
-      enEditingFormSubmit: () => {
-        //TODO - ОБРАБОТКА ОТПРАВКМ ФОРМЫ
+      onEditingFormSubmit: () => {
+        //TODO - ОБРАБОТКА ОТПРАВКИ ФОРМЫ
         replaceEditFormToPoint();
+        document.removeEventListener('keydown', escapeKeyDownHandler);
       },
     });
     function replacePointToEditForm() {

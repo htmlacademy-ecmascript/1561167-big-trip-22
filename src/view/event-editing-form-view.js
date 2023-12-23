@@ -1,6 +1,6 @@
 import { PRESET_EVENT_POINT_TYPE, TYPES_EVENTS } from '../const';
 import AbstractView from '../framework/view/abstract-view';
-import { humanizeDateCalendarFormat } from '../utils';
+import { humanizeDateCalendarFormat } from '../utils/events';
 
 const createEventTypeList = (type = PRESET_EVENT_POINT_TYPE) => {
   const createEventTypeItem = (item) => `
@@ -187,7 +187,7 @@ export default class EventEditingFormView extends AbstractView {
   #offers = null;
   #event = null;
   #onEditingFormClick = null;
-  #enEditingFormSubmit = null;
+  #onEditingFormSubmit = null;
 
   constructor(formPparameters) {
     const {
@@ -196,7 +196,7 @@ export default class EventEditingFormView extends AbstractView {
       offers,
       event,
       onEditingFormClick,
-      enEditingFormSubmit,
+      onEditingFormSubmit,
     } = formPparameters;
 
     super();
@@ -205,7 +205,7 @@ export default class EventEditingFormView extends AbstractView {
     this.#offers = offers;
     this.#event = event;
     this.#onEditingFormClick = onEditingFormClick;
-    this.#enEditingFormSubmit = enEditingFormSubmit;
+    this.#onEditingFormSubmit = onEditingFormSubmit;
 
     this.element
       .querySelector('.event__rollup-btn')
@@ -232,6 +232,6 @@ export default class EventEditingFormView extends AbstractView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#enEditingFormSubmit();
+    this.#onEditingFormSubmit();
   };
 }

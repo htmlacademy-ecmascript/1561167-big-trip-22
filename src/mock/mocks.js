@@ -1,5 +1,5 @@
 import { TYPES_EVENTS } from '../const';
-import { getRandomArrayElement } from '../utils';
+import { getRandomArrayElement } from '../utils/common';
 
 const LOREMS = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',

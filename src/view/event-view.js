@@ -3,7 +3,7 @@ import {
   humanizeDurationEvent,
   humanizeDateShortFormat,
   humanizeDateTimeFormat,
-} from '../utils';
+} from '../utils/events';
 
 const getTotalCostOffers = (offers) => {
   if (!offers.length) {

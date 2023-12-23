@@ -14,5 +14,9 @@ export default class EventsModel {
     return this.#events;
   }
 
+  get isEmpty() {
+    return this.#events.length === 0;
+  }
+
   getById = (eventId) => this.#events.find(({ id }) => id === eventId);
 }

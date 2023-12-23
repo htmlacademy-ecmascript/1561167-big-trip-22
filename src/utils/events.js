@@ -10,7 +10,7 @@ import {
   SHORT_EVENT_DURATION_TEMPLATE,
   TIME_TEMPLATE,
   DATE_EVENT_TEMPLATE,
-} from './const';
+} from '../const';
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -40,16 +40,9 @@ const humanizeDurationEvent = ({ dateFrom, dateTo }) => {
   return dayjs.duration(diffTimeshtamp).format(SHORT_EVENT_DURATION_TEMPLATE);
 };
 
-const getRandomArrayElement = (items) =>
-  items[Math.floor(Math.random() * items.length)];
-
-const isEscKeyPressed = (key) => key === 'Escape';
-
 export {
-  getRandomArrayElement,
   humanizeDateCalendarFormat,
   humanizeDurationEvent,
   humanizeDateShortFormat,
   humanizeDateTimeFormat,
-  isEscKeyPressed,
 };
