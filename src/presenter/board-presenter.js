@@ -15,6 +15,7 @@ export default class BoardPresenter {
   #offersModel = null;
   #filterContainer = null;
   #tripHeaderContainer = null;
+  #filters = null;
 
   #eventsContainerComponent = new EventsContainerView();
   #boardEvents = [];
@@ -27,6 +28,7 @@ export default class BoardPresenter {
       eventsModel,
       destinationsModel,
       offerrsModel,
+      filters,
     } = board;
     this.#tripHeaderContainer = tripHeaderContainer;
     this.#filterContainer = filterContainer;
@@ -34,12 +36,13 @@ export default class BoardPresenter {
     this.#eventsModel = eventsModel;
     this.#destinationModel = destinationsModel;
     this.#offersModel = offerrsModel;
+    this.#filters = filters;
   }
 
   init() {
     this.#boardEvents = this.#eventsModel.all;
 
-    render(new ListFilterView(), this.#filterContainer);
+    render(new ListFilterView(this.#filters), this.#filterContainer);
     this.#renderBoard();
   }
 
@@ -97,7 +100,7 @@ export default class BoardPresenter {
         document.removeEventListener('keydown', escapeKeyDownHandler);
       },
       onEditingFormSubmit: () => {
-        //TODO - ОБРАБОТКА ОТПРАВКИ ФОРМЫ
+        //TODO - ОТПРАВКА ФОРМЫ
         replaceEditFormToPoint();
         document.removeEventListener('keydown', escapeKeyDownHandler);
       },

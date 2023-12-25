@@ -40,9 +40,19 @@ const humanizeDurationEvent = ({ dateFrom, dateTo }) => {
   return dayjs.duration(diffTimeshtamp).format(SHORT_EVENT_DURATION_TEMPLATE);
 };
 
+const isPlannedEvent = (event) => dayjs().isBefore(event.dateFrom);
+
+const isCurrentEvent = (event) =>
+  dayjs().isAfter(event.dateFrom) && dayjs().isBefore(event.dateTo);
+
+const isCompletedEvent = (event) => dayjs().isAfter(event.dateTo);
+
 export {
   humanizeDateCalendarFormat,
   humanizeDurationEvent,
   humanizeDateShortFormat,
   humanizeDateTimeFormat,
+  isPlannedEvent,
+  isCurrentEvent,
+  isCompletedEvent,
 };

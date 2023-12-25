@@ -4,6 +4,7 @@ import OffersModel from './model/offers-model';
 import BoardPresenter from './presenter/board-presenter';
 import { loadDestinations, loadOffers, loadRandomEvent } from './mock/mocks';
 import { TEST_EVENTS_COUNT } from './const';
+import { generateFilter } from './mock/filter';
 
 const tripHeaderNode = document.querySelector('.trip-main');
 const filterContainerNode = tripHeaderNode.querySelector(
@@ -16,6 +17,7 @@ const eventsModel = new EventsModel(
 );
 const destinationsModel = new DestinationsModel(loadDestinations());
 const offerrsModel = new OffersModel(loadOffers());
+const filters = generateFilter(eventsModel.all);
 const boardPresenter = new BoardPresenter({
   tripHeaderContainer: tripHeaderNode,
   filterContainer: filterContainerNode,
@@ -23,6 +25,7 @@ const boardPresenter = new BoardPresenter({
   eventsModel,
   destinationsModel,
   offerrsModel,
+  filters,
 });
 
 boardPresenter.init();
