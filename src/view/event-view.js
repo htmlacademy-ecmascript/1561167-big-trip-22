@@ -1,19 +1,18 @@
-import { DURATION_EVENT_TEMPLATE } from '../const';
-import { createElement } from '../render';
+import AbstractView from '../framework/view/abstract-view';
 import {
-  humanizeDuration,
-  getHoursFromString,
-  getMinutesFromString,
-  humanizeDate,
-} from '../utils';
+  humanizeDurationEvent,
+  humanizeDateShortFormat,
+  humanizeDateTimeFormat,
+} from '../utils/events';
 
 const getTotalCostOffers = (offers) => {
   if (!offers.length) {
     return 0;
   }
 
-  return offers.reduce((acc, item) => (acc += item.price), 0);
+  return offers.reduce((acc, item) => acc + item.price, 0);
 };
+
 const createListOffersTemplate = (offers) => {
   if (!offers.length) {
     return '';
@@ -40,12 +39,11 @@ const createListOffersTemplate = (offers) => {
 const createEventTemplate = ({ event, destination, offers }) => {
   const { dateFrom, dateTo, type, basePrice, isFavorite } = event;
   const name = destination?.name ?? '';
-  const dateEvent = { dueDate: dateFrom, template: DURATION_EVENT_TEMPLATE };
   return `
   <li class="trip-events__item">
     <div class="event">
       <time class="event__date" datetime="${dateFrom}">
-      ${humanizeDate(dateEvent)}</time>
+      ${humanizeDateShortFormat(dateFrom)}</time>
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
       </div>
@@ -53,14 +51,13 @@ const createEventTemplate = ({ event, destination, offers }) => {
       <div class="event__schedule">
         <p class="event__time">
           <time class="event__start-time" datetime="${dateFrom}">
-          ${getHoursFromString(dateFrom)}:
-          ${getMinutesFromString(dateFrom)}</time>
+          ${humanizeDateTimeFormat(dateFrom)}</time>
           &mdash;
           <time class="event__end-time" datetime="${dateTo}">
-          ${getHoursFromString(dateTo)}:${getMinutesFromString(dateTo)}</time>
+          ${humanizeDateTimeFormat(dateTo)}</time>
         </p>
         <p class="event__duration">
-          ${humanizeDuration({ dateFrom, dateTo })}
+          ${humanizeDurationEvent({ dateFrom, dateTo })}
         </p>
       </div>
       <p class="event__price">
@@ -84,29 +81,34 @@ const createEventTemplate = ({ event, destination, offers }) => {
 `;
 };
 
-export default class EventView {
-  constructor({ event, destination, offers }) {
-    this.event = event;
-    this.destination = destination;
-    this.offers = offers;
+export default class EventView extends AbstractView {
+  #event = null;
+  #destination = null;
+  #offers = null;
+  #onEditEventClick = null;
+
+  constructor({ event, destination, offers, onEditEventClick }) {
+    super();
+    this.#event = event;
+    this.#destination = destination;
+    this.#offers = offers;
+    this.#onEditEventClick = onEditEventClick;
+
+    this.element
+      .querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#editClickHandler);
   }
 
-  getTemplate = () =>
-    createEventTemplate({
-      event: this.event,
-      destination: this.destination,
-      offers: this.offers,
+  get template() {
+    return createEventTemplate({
+      event: this.#event,
+      destination: this.#destination,
+      offers: this.#offers,
     });
+  }
 
-  getElement = () => {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  };
-
-  removeElement = () => {
-    this.element = null;
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#onEditEventClick();
   };
 }
