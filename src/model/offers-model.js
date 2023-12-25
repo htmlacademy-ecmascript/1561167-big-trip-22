@@ -1,11 +1,10 @@
 import { PRESET_EVENT_POINT_TYPE } from '../const';
-import { loadOffers } from '../mock/mocks';
 
 export default class OffersModel {
   #offers = null;
 
-  constructor() {
-    this.#offers = loadOffers();
+  constructor(offers) {
+    this.#offers = offers;
   }
 
   get all() {

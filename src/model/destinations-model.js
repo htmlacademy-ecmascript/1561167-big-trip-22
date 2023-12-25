@@ -1,10 +1,8 @@
-import { loadDestinations } from '../mock/mocks';
-
 export default class DestinationsModel {
   #destinations = null;
 
-  constructor() {
-    this.#destinations = loadDestinations();
+  constructor(destinations) {
+    this.#destinations = destinations;
   }
 
   get all() {
