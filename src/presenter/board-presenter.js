@@ -1,10 +1,8 @@
-import { RenderPosition, render, replace } from '../framework/render';
+import { render, replace } from '../framework/render';
 import EventsContainerView from '../view/events-container-view';
-import ListFilterView from '../view/list-filter-view';
 import ListSortView from '../view/list-sort-view';
 import EventView from '../view/event-view';
 import EventEditingFormView from '../view/event-editing-form-view';
-import InformationTripView from '../view/information-trip-view';
 import NoEventsView from '../view/no-events-view';
 import { isEscapeKey } from '../utils/common';
 
@@ -13,54 +11,29 @@ export default class BoardPresenter {
   #eventsModel = null;
   #destinationModel = null;
   #offersModel = null;
-  #filterContainer = null;
-  #tripHeaderContainer = null;
-  #filters = null;
-
   #eventsContainerComponent = new EventsContainerView();
   #boardEvents = [];
 
   constructor(board) {
-    const {
-      tripHeaderContainer,
-      filterContainer,
-      boardContainer,
-      eventsModel,
-      destinationsModel,
-      offerrsModel,
-      filters,
-    } = board;
-    this.#tripHeaderContainer = tripHeaderContainer;
-    this.#filterContainer = filterContainer;
+    const { boardContainer, eventsModel, destinationsModel, offerrsModel } =
+      board;
+
     this.#boardContainer = boardContainer;
     this.#eventsModel = eventsModel;
     this.#destinationModel = destinationsModel;
     this.#offersModel = offerrsModel;
-    this.#filters = filters;
   }
 
-  init() {
+  init = () => {
     this.#boardEvents = this.#eventsModel.all;
-
-    render(new ListFilterView(this.#filters), this.#filterContainer);
     this.#renderBoard();
-  }
+  };
 
   #renderBoard = () => {
     if (this.#eventsModel.isEmpty) {
       render(new NoEventsView(), this.#boardContainer);
       return;
     }
-
-    render(
-      new InformationTripView({
-        events: this.#boardEvents,
-        offers: this.#offersModel.all,
-        destinations: this.#destinationModel.all,
-      }),
-      this.#tripHeaderContainer,
-      RenderPosition.AFTERBEGIN
-    );
 
     render(new ListSortView(), this.#boardContainer);
     render(this.#eventsContainerComponent, this.#boardContainer);

@@ -9,14 +9,14 @@ const createFilterItemTemplate = ({ type, isDisabled, isChecked }) => `
   </div>
 `;
 
-const createListFilterTemplate = (filters) => `
+const createFiltersTemplate = (filters) => `
   <form class="trip-filters" action="#" method="get">
     ${filters.map((filter) => createFilterItemTemplate(filter)).join('')}
     <button class="visually-hidden" type="submit">Accept filter</button>
   </form>
 `;
 
-export default class ListFilterView extends AbstractView {
+export default class FilterView extends AbstractView {
   #filters = null;
 
   constructor(filters) {
@@ -25,6 +25,6 @@ export default class ListFilterView extends AbstractView {
   }
 
   get template() {
-    return createListFilterTemplate(this.#filters);
+    return createFiltersTemplate(this.#filters);
   }
 }
