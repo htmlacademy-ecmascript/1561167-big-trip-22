@@ -25,7 +25,7 @@ export default class BoardPresenter {
   }
 
   init = () => {
-    this.#boardEvents = this.#eventsModel.all;
+    this.#boardEvents = [...this.#eventsModel.all];
     this.#renderBoard();
   };
 

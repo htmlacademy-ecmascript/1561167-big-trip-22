@@ -171,7 +171,7 @@ const createEventEditingFormTemplate = ({
   offers,
   event,
 }) => {
-  const { dateFrom, dateTo, type } = event ?? {};
+  const { dateFrom, dateTo, type } = event;
   return `
   <li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">

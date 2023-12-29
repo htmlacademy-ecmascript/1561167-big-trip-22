@@ -28,9 +28,9 @@ export default class HeaderPresenter {
 
   init = () => {
     const informationTripComponent = new InformationTripView({
-      events: this.#eventsModel.all,
-      offers: this.#offersModel.all,
-      destinations: this.#destinationModel.all,
+      events: [...this.#eventsModel.all],
+      offers: [...this.#offersModel.all],
+      destinations: [...this.#destinationModel.all],
     });
     if (informationTripComponent.element) {
       render(

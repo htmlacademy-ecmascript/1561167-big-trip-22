@@ -44,7 +44,7 @@ const createEventTemplate = ({ event, destination, offers }) => {
     type = PRESET_EVENT_POINT_TYPE,
     basePrice,
     isFavorite,
-  } = event ?? {};
+  } = event;
   const name = destination?.name ?? '';
   return `
   <li class="trip-events__item">
