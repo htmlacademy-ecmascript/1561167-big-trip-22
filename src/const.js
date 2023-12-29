@@ -28,6 +28,13 @@ const AVERAGE_EVENT_DURATION_TEMPLATE = 'HH[H] mm[M]';
 const SHORT_EVENT_DURATION_TEMPLATE = 'mm[M]';
 const DATE_EVENT_TEMPLATE = 'DD/MM/YY hh:mm';
 
+const TypesFilters = {
+  EVERYTHING: 'Everything',
+  FUTURE: 'Future',
+  PRESENT: 'Present',
+  PAST: 'Past',
+};
+
 const TEST_EVENT_ID = '22';
 const TEST_EVENTS_COUNT = 5;
 
@@ -46,4 +53,5 @@ export {
   SHORT_EVENT_DURATION_TEMPLATE,
   MSEC_IN_DAY,
   MSEC_IN_HOUR,
+  TypesFilters,
 };
