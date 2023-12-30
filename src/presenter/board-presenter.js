@@ -1,18 +1,19 @@
-import { render, replace } from '../framework/render';
+import { render } from '../framework/render';
 import EventsContainerView from '../view/events-container-view';
-import ListSortView from '../view/list-sort-view';
-import EventView from '../view/event-view';
-import EventEditingFormView from '../view/event-editing-form-view';
+import SortView from '../view/sort-view';
 import NoEventsView from '../view/no-events-view';
-import { isEscapeKey } from '../utils/common';
+import EventPresenter from './event-presenter';
 
 export default class BoardPresenter {
   #boardContainer = null;
   #eventsModel = null;
   #destinationModel = null;
   #offersModel = null;
-  #eventsContainerComponent = new EventsContainerView();
+
   #boardEvents = [];
+  #eventsContainerComponent = new EventsContainerView();
+  #sortComponent = new SortView();
+  #noEventsComponent = new NoEventsView();
 
   constructor(board) {
     const { boardContainer, eventsModel, destinationsModel, offerrsModel } =
@@ -31,60 +32,30 @@ export default class BoardPresenter {
 
   #renderBoard = () => {
     if (this.#eventsModel.isEmpty) {
-      render(new NoEventsView(), this.#boardContainer);
+      this.#renderNoEvents();
       return;
     }
 
-    render(new ListSortView(), this.#boardContainer);
+    this.#renderSort();
+    this.#renderEventsList();
+  };
+
+  #renderNoEvents = () => render(this.#noEventsComponent, this.#boardContainer);
+
+  #renderSort = () => render(this.#sortComponent, this.#boardContainer);
+
+  #renderEventsList = () => {
     render(this.#eventsContainerComponent, this.#boardContainer);
     this.#boardEvents.forEach((itemEvent) => this.#renderEvent(itemEvent));
   };
 
   #renderEvent = (event) => {
-    const escapeKeyDownHandler = (evt) => {
-      if (!isEscapeKey(evt)) {
-        return;
-      }
-      evt.preventDefault();
-      replaceEditFormToPoint();
-      document.removeEventListener('keydown', escapeKeyDownHandler);
-    };
-    const destination = this.#destinationModel.getById(event.destination);
-    const eventOffers = this.#offersModel.getSelectedOnes({
-      eventType: event.type,
-      eventOffers: event.offers,
+    const eventPresenter = new EventPresenter({
+      destinationModel: this.#destinationModel,
+      offersModel: this.#offersModel,
+      eventsContainerComponent: this.#eventsContainerComponent,
     });
-    const eventComponent = new EventView({
-      event,
-      destination,
-      offers: eventOffers,
-      onEditEventClick: () => {
-        replacePointToEditForm();
-        document.addEventListener('keydown', escapeKeyDownHandler);
-      },
-    });
-    const eventEditingFormComponent = new EventEditingFormView({
-      event,
-      destination,
-      titles: this.#destinationModel.names,
-      offers: this.#offersModel.getByType(event.type),
-      onEditingFormClick: () => {
-        replaceEditFormToPoint();
-        document.removeEventListener('keydown', escapeKeyDownHandler);
-      },
-      onEditingFormSubmit: () => {
-        //TODO - ОТПРАВКА ФОРМЫ
-        replaceEditFormToPoint();
-        document.removeEventListener('keydown', escapeKeyDownHandler);
-      },
-    });
-    function replacePointToEditForm() {
-      replace(eventEditingFormComponent, eventComponent);
-    }
-    function replaceEditFormToPoint() {
-      replace(eventComponent, eventEditingFormComponent);
-    }
 
-    render(eventComponent, this.#eventsContainerComponent.element);
+    eventPresenter.init(event);
   };
 }
