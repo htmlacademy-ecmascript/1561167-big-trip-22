@@ -13,6 +13,8 @@ export default class EventPresenter {
   #eventEditingFormComponent = null;
   #eventsContainer = null;
   #onEventChange = null;
+  #onModeChange = null;
+  #isEditingMode = false;
 
   constructor({
     destination,
@@ -21,6 +23,7 @@ export default class EventPresenter {
     titles,
     eventsContainer,
     onEventChange,
+    onModeChange,
   }) {
     this.#destination = destination;
     this.#offers = offers;
@@ -28,6 +31,7 @@ export default class EventPresenter {
     this.#titles = titles;
     this.#eventsContainer = eventsContainer;
     this.#onEventChange = onEventChange;
+    this.#onModeChange = onModeChange;
   }
 
   init(event) {
@@ -57,10 +61,10 @@ export default class EventPresenter {
       return;
     }
 
-    if (this.#eventsContainer.contains(prevEventComponent.element)) {
+    if (!this.#isEditingMode) {
       replace(this.#eventComponent, prevEventComponent);
     }
-    if (this.#eventsContainer.contains(prevEventEditingFormComponent.element)) {
+    if (this.#isEditingMode) {
       replace(this.#eventEditingFormComponent, prevEventEditingFormComponent);
     }
 
@@ -73,11 +77,22 @@ export default class EventPresenter {
     remove(this.#eventEditingFormComponent);
   };
 
-  #replaceEventToEditForm = () =>
-    replace(this.#eventEditingFormComponent, this.#eventComponent);
+  resetView = () => {
+    if (this.#isEditingMode) {
+      this.#replaceEditFormToEvent();
+    }
+  };
 
-  #replaceEditFormToEvent = () =>
+  #replaceEventToEditForm = () => {
+    replace(this.#eventEditingFormComponent, this.#eventComponent);
+    this.#onModeChange();
+    this.#isEditingMode = true;
+  };
+
+  #replaceEditFormToEvent = () => {
     replace(this.#eventComponent, this.#eventEditingFormComponent);
+    this.#isEditingMode = false;
+  };
 
   #onEventModeToggleClick = () => {
     this.#replaceEventToEditForm();

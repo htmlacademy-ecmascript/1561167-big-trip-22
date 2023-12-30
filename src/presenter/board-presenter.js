@@ -65,6 +65,7 @@ export default class BoardPresenter {
       titles: this.#destinationModel.names,
       eventsContainer: this.#eventsContainerComponent.element,
       onEventChange: this.#onEventChange,
+      onModeChange: this.#onModeChange,
     });
 
     this.#eventPresenters.set(event.id, eventPresenter);
@@ -79,5 +80,9 @@ export default class BoardPresenter {
   #onEventChange = (updateEvent) => {
     this.#boardEvents = updateItem(this.#boardEvents, updateEvent);
     this.#eventPresenters.get(updateEvent.id).init(updateEvent);
+  };
+
+  #onModeChange = () => {
+    this.#eventPresenters.forEach((presenter) => presenter.resetView());
   };
 }
