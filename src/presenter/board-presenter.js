@@ -3,6 +3,7 @@ import EventsContainerView from '../view/events-container-view';
 import SortView from '../view/sort-view';
 import NoEventsView from '../view/no-events-view';
 import EventPresenter from './event-presenter';
+import { updateItem } from '../utils/common';
 
 export default class BoardPresenter {
   #boardContainer = null;
@@ -14,6 +15,7 @@ export default class BoardPresenter {
   #eventsContainerComponent = new EventsContainerView();
   #sortComponent = new SortView();
   #noEventsComponent = new NoEventsView();
+  #eventPresenters = new Map();
 
   constructor(board) {
     const { boardContainer, eventsModel, destinationsModel, offerrsModel } =
@@ -37,25 +39,45 @@ export default class BoardPresenter {
     }
 
     this.#renderSort();
-    this.#renderEventsList();
+    this.#renderListEvents();
   };
 
   #renderNoEvents = () => render(this.#noEventsComponent, this.#boardContainer);
 
   #renderSort = () => render(this.#sortComponent, this.#boardContainer);
 
-  #renderEventsList = () => {
+  #renderListEvents = () => {
     render(this.#eventsContainerComponent, this.#boardContainer);
     this.#boardEvents.forEach((itemEvent) => this.#renderEvent(itemEvent));
   };
 
   #renderEvent = (event) => {
+    const destination = this.#destinationModel.getById(event.destination);
+    const offers = this.#offersModel.getByType(event.type);
+    const eventOffers = this.#offersModel.getSelectedOnes({
+      eventType: event.type,
+      eventOffers: event.offers,
+    });
     const eventPresenter = new EventPresenter({
-      destinationModel: this.#destinationModel,
-      offersModel: this.#offersModel,
-      eventsContainerComponent: this.#eventsContainerComponent,
+      destination,
+      offers,
+      eventOffers,
+      titles: this.#destinationModel.names,
+      eventsContainer: this.#eventsContainerComponent.element,
+      onEventChange: this.#onEventChange,
     });
 
+    this.#eventPresenters.set(event.id, eventPresenter);
     eventPresenter.init(event);
+  };
+
+  #clearListEvents = () => {
+    this.#eventPresenters.forEach((presenter) => presenter.destroy());
+    this.#eventPresenters.clear();
+  };
+
+  #onEventChange = (updateEvent) => {
+    this.#boardEvents = updateItem(this.#boardEvents, updateEvent);
+    this.#eventPresenters.get(updateEvent.id).init(updateEvent);
   };
 }

@@ -1,50 +1,77 @@
-import { render, replace } from '../framework/render';
+import { remove, render, replace } from '../framework/render';
 import { isEscapeKey } from '../utils/common';
 import EventEditingFormView from '../view/event-editing-form-view';
 import EventView from '../view/event-view';
 
 export default class EventPresenter {
   #event = null;
-  #destinationModel = null;
-  #offersModel = null;
+  #destination = null;
+  #offers = null;
+  #eventOffers = null;
+  #titles = null;
   #eventComponent = null;
   #eventEditingFormComponent = null;
-  #eventsContainerComponent = null;
+  #eventsContainer = null;
+  #onEventChange = null;
 
-  constructor({ destinationModel, offersModel, eventsContainerComponent }) {
-    this.#destinationModel = destinationModel;
-    this.#offersModel = offersModel;
-    this.#eventsContainerComponent = eventsContainerComponent;
+  constructor({
+    destination,
+    offers,
+    eventOffers,
+    titles,
+    eventsContainer,
+    onEventChange,
+  }) {
+    this.#destination = destination;
+    this.#offers = offers;
+    this.#eventOffers = eventOffers;
+    this.#titles = titles;
+    this.#eventsContainer = eventsContainer;
+    this.#onEventChange = onEventChange;
   }
 
   init(event) {
     this.#event = event;
-    const destination = this.#destinationModel.getById(this.#event.destination);
-    const eventOffers = this.#offersModel.getSelectedOnes({
-      eventType: this.#event.type,
-      eventOffers: this.#event.offers,
-    });
+
+    const prevEventComponent = this.#eventComponent;
+    const prevEventEditingFormComponent = this.#eventEditingFormComponent;
 
     this.#eventComponent = new EventView({
       event: this.#event,
-      destination,
-      offers: eventOffers,
+      destination: this.#destination,
+      offers: this.#eventOffers,
       onEventModeToggleClick: this.#onEventModeToggleClick,
+      onFavoriteClick: this.#handleFavoriteClick,
     });
     this.#eventEditingFormComponent = new EventEditingFormView({
       event: this.#event,
-      destination,
-      titles: this.#destinationModel.names,
-      offers: this.#offersModel.getByType(event.type),
+      destination: this.#destination,
+      titles: this.#titles,
+      offers: this.#offers,
       onEditingModeToggleClick: this.#onEditingModeToggleClick,
       onEditingFormSubmit: this.#onEditingFormSubmit,
     });
 
-    this.#renderEvent();
+    if (prevEventComponent === null || prevEventEditingFormComponent === null) {
+      render(this.#eventComponent, this.#eventsContainer);
+      return;
+    }
+
+    if (this.#eventsContainer.contains(prevEventComponent.element)) {
+      replace(this.#eventComponent, prevEventComponent);
+    }
+    if (this.#eventsContainer.contains(prevEventEditingFormComponent.element)) {
+      replace(this.#eventEditingFormComponent, prevEventEditingFormComponent);
+    }
+
+    remove(prevEventComponent);
+    remove(prevEventEditingFormComponent);
   }
 
-  #renderEvent = () =>
-    render(this.#eventComponent, this.#eventsContainerComponent.element);
+  destroy = () => {
+    remove(this.#eventComponent);
+    remove(this.#eventEditingFormComponent);
+  };
 
   #replaceEventToEditForm = () =>
     replace(this.#eventEditingFormComponent, this.#eventComponent);
@@ -66,6 +93,13 @@ export default class EventPresenter {
     //TODO - ОТПРАВКА ФОРМЫ
     this.#replaceEditFormToEvent();
     document.removeEventListener('keydown', this.#escapeKeyDownHandler);
+  };
+
+  #handleFavoriteClick = () => {
+    this.#onEventChange({
+      ...this.#event,
+      isFavorite: !this.#event.isFavorite,
+    });
   };
 
   #escapeKeyDownHandler = (evt) => {
