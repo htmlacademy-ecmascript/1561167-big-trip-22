@@ -45,7 +45,7 @@ export default class EventPresenter {
       destination: this.#destination,
       offers: this.#eventOffers,
       onEventModeToggleClick: this.#onEventModeToggleClick,
-      onFavoriteClick: this.#handleFavoriteClick,
+      onFavoriteClick: this.#onFavoriteClick,
     });
     this.#eventEditingFormComponent = new EventEditingFormView({
       event: this.#event,
@@ -96,33 +96,33 @@ export default class EventPresenter {
 
   #onEventModeToggleClick = () => {
     this.#replaceEventToEditForm();
-    document.addEventListener('keydown', this.#escapeKeyDownHandler);
+    document.addEventListener('keydown', this.#onEscapeKeyDown);
   };
 
   #onEditingModeToggleClick = () => {
     this.#replaceEditFormToEvent();
-    document.removeEventListener('keydown', this.#escapeKeyDownHandler);
+    document.removeEventListener('keydown', this.#onEscapeKeyDown);
   };
 
   #onEditingFormSubmit = () => {
     //TODO - ОТПРАВКА ФОРМЫ
     this.#replaceEditFormToEvent();
-    document.removeEventListener('keydown', this.#escapeKeyDownHandler);
+    document.removeEventListener('keydown', this.#onEscapeKeyDown);
   };
 
-  #handleFavoriteClick = () => {
+  #onFavoriteClick = () => {
     this.#onEventChange({
       ...this.#event,
       isFavorite: !this.#event.isFavorite,
     });
   };
 
-  #escapeKeyDownHandler = (evt) => {
+  #onEscapeKeyDown = (evt) => {
     if (!isEscapeKey(evt)) {
       return;
     }
     evt.preventDefault();
     this.#replaceEditFormToEvent();
-    document.removeEventListener('keydown', this.#escapeKeyDownHandler);
+    document.removeEventListener('keydown', this.#onEscapeKeyDown);
   };
 }
