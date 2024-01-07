@@ -1,18 +1,21 @@
-import { render, replace } from '../framework/render';
+import { render } from '../framework/render';
 import EventsContainerView from '../view/events-container-view';
-import ListSortView from '../view/list-sort-view';
-import EventView from '../view/event-view';
-import EventEditingFormView from '../view/event-editing-form-view';
+import SortView from '../view/sort-view';
 import NoEventsView from '../view/no-events-view';
-import { isEscapeKey } from '../utils/common';
+import EventPresenter from './event-presenter';
+import { updateItem } from '../utils/common';
 
 export default class BoardPresenter {
   #boardContainer = null;
   #eventsModel = null;
   #destinationModel = null;
   #offersModel = null;
-  #eventsContainerComponent = new EventsContainerView();
+
   #boardEvents = [];
+  #eventsContainerComponent = new EventsContainerView();
+  #sortComponent = new SortView();
+  #noEventsComponent = new NoEventsView();
+  #eventPresenters = new Map();
 
   constructor(board) {
     const { boardContainer, eventsModel, destinationsModel, offerrsModel } =
@@ -31,60 +34,55 @@ export default class BoardPresenter {
 
   #renderBoard = () => {
     if (this.#eventsModel.isEmpty) {
-      render(new NoEventsView(), this.#boardContainer);
+      this.#renderNoEvents();
       return;
     }
 
-    render(new ListSortView(), this.#boardContainer);
+    this.#renderSort();
+    this.#renderListEvents();
+  };
+
+  #renderNoEvents = () => render(this.#noEventsComponent, this.#boardContainer);
+
+  #renderSort = () => render(this.#sortComponent, this.#boardContainer);
+
+  #renderListEvents = () => {
     render(this.#eventsContainerComponent, this.#boardContainer);
     this.#boardEvents.forEach((itemEvent) => this.#renderEvent(itemEvent));
   };
 
   #renderEvent = (event) => {
-    const escapeKeyDownHandler = (evt) => {
-      if (!isEscapeKey(evt)) {
-        return;
-      }
-      evt.preventDefault();
-      replaceEditFormToPoint();
-      document.removeEventListener('keydown', escapeKeyDownHandler);
-    };
     const destination = this.#destinationModel.getById(event.destination);
+    const offers = this.#offersModel.getByType(event.type);
     const eventOffers = this.#offersModel.getSelectedOnes({
       eventType: event.type,
       eventOffers: event.offers,
     });
-    const eventComponent = new EventView({
-      event,
+    const eventPresenter = new EventPresenter({
       destination,
-      offers: eventOffers,
-      onEditEventClick: () => {
-        replacePointToEditForm();
-        document.addEventListener('keydown', escapeKeyDownHandler);
-      },
-    });
-    const eventEditingFormComponent = new EventEditingFormView({
-      event,
-      destination,
+      offers,
+      eventOffers,
       titles: this.#destinationModel.names,
-      offers: this.#offersModel.getByType(event.type),
-      onEditingFormClick: () => {
-        replaceEditFormToPoint();
-        document.removeEventListener('keydown', escapeKeyDownHandler);
-      },
-      onEditingFormSubmit: () => {
-        //TODO - ОТПРАВКА ФОРМЫ
-        replaceEditFormToPoint();
-        document.removeEventListener('keydown', escapeKeyDownHandler);
-      },
+      eventsContainer: this.#eventsContainerComponent.element,
+      onEventChange: this.#onEventChange,
+      onModeChange: this.#onModeChange,
     });
-    function replacePointToEditForm() {
-      replace(eventEditingFormComponent, eventComponent);
-    }
-    function replaceEditFormToPoint() {
-      replace(eventComponent, eventEditingFormComponent);
-    }
 
-    render(eventComponent, this.#eventsContainerComponent.element);
+    this.#eventPresenters.set(event.id, eventPresenter);
+    eventPresenter.init(event);
+  };
+
+  #clearListEvents = () => {
+    this.#eventPresenters.forEach((presenter) => presenter.destroy());
+    this.#eventPresenters.clear();
+  };
+
+  #onEventChange = (updateEvent) => {
+    this.#boardEvents = updateItem(this.#boardEvents, updateEvent);
+    this.#eventPresenters.get(updateEvent.id).init(updateEvent);
+  };
+
+  #onModeChange = () => {
+    this.#eventPresenters.forEach((presenter) => presenter.resetView());
   };
 }

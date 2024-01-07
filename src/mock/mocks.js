@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid';
 import { TYPES_EVENTS } from '../const';
 import { getRandomArrayElement } from '../utils/common';
 
@@ -14,8 +15,6 @@ const CITIES = ['Amsterdam', 'Chamonix', 'Geneva', 'Sofia'];
 
 const mockEvents = [
   {
-    id: '00',
-    // 23M
     basePrice: 0,
     dateFrom: '2019-07-10T11:22Z',
     dateTo: '2019-07-10T11:45Z',
@@ -25,8 +24,6 @@ const mockEvents = [
     type: TYPES_EVENTS[0],
   },
   {
-    id: '11',
-    // 02H 00M
     basePrice: 1100,
     dateFrom: '2019-07-12T10:55Z',
     dateTo: '2019-07-12T12:55Z',
@@ -36,8 +33,6 @@ const mockEvents = [
     type: TYPES_EVENTS[1],
   },
   {
-    id: '22',
-    // 01D 00H 00M
     basePrice: 2200,
     dateFrom: '2019-07-14T09:22Z',
     dateTo: '2019-07-15T09:22Z',
@@ -47,8 +42,6 @@ const mockEvents = [
     type: TYPES_EVENTS[2],
   },
   {
-    id: '33',
-    // 02D 01H 05M
     basePrice: 3300,
     dateFrom: '2019-07-14T09:50Z',
     dateTo: '2019-07-16T10:55Z',
@@ -207,7 +200,10 @@ const mockOffers = [
   },
 ];
 
-const loadRandomEvent = () => getRandomArrayElement(mockEvents);
+const loadRandomEvent = () => {
+  const event = getRandomArrayElement(mockEvents);
+  return { id: nanoid(), ...event };
+};
 
 const loadDestinations = () => mockDestinations;
 

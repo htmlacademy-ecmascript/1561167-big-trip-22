@@ -94,18 +94,29 @@ export default class EventView extends AbstractView {
   #event = null;
   #destination = null;
   #offers = null;
-  #onEditEventClick = null;
+  #onEventModeToggleClick = null;
+  #onFavoriteClick = null;
 
-  constructor({ event, destination, offers, onEditEventClick }) {
+  constructor({
+    event,
+    destination,
+    offers,
+    onEventModeToggleClick,
+    onFavoriteClick,
+  }) {
     super();
     this.#event = event;
     this.#destination = destination;
     this.#offers = offers;
-    this.#onEditEventClick = onEditEventClick;
+    this.#onEventModeToggleClick = onEventModeToggleClick;
+    this.#onFavoriteClick = onFavoriteClick;
 
     this.element
       .querySelector('.event__rollup-btn')
-      .addEventListener('click', this.#editClickHandler);
+      .addEventListener('click', this.#eventModeToggleClickHandler);
+    this.element
+      .querySelector('.event__favorite-btn')
+      .addEventListener('click', this.#favoritClickHandle);
   }
 
   get template() {
@@ -116,8 +127,13 @@ export default class EventView extends AbstractView {
     });
   }
 
-  #editClickHandler = (evt) => {
+  #eventModeToggleClickHandler = (evt) => {
     evt.preventDefault();
-    this.#onEditEventClick();
+    this.#onEventModeToggleClick();
+  };
+
+  #favoritClickHandle = (evt) => {
+    evt.preventDefault();
+    this.#onFavoriteClick();
   };
 }

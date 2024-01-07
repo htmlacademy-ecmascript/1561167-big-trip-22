@@ -200,7 +200,7 @@ export default class EventEditingFormView extends AbstractView {
   #destination = null;
   #offers = null;
   #event = null;
-  #onEditingFormClick = null;
+  #onEditingModeToggleClick = null;
   #onEditingFormSubmit = null;
 
   constructor(formPparameters) {
@@ -209,7 +209,7 @@ export default class EventEditingFormView extends AbstractView {
       destination,
       offers,
       event,
-      onEditingFormClick,
+      onEditingModeToggleClick,
       onEditingFormSubmit,
     } = formPparameters;
 
@@ -218,12 +218,12 @@ export default class EventEditingFormView extends AbstractView {
     this.#destination = destination;
     this.#offers = offers;
     this.#event = event;
-    this.#onEditingFormClick = onEditingFormClick;
+    this.#onEditingModeToggleClick = onEditingModeToggleClick;
     this.#onEditingFormSubmit = onEditingFormSubmit;
 
     this.element
       .querySelector('.event__rollup-btn')
-      .addEventListener('click', this.#closingFormClickHandler);
+      .addEventListener('click', this.#closingEditingFormClickHandler);
 
     this.element
       .querySelector('form')
@@ -239,13 +239,13 @@ export default class EventEditingFormView extends AbstractView {
     });
   }
 
-  #closingFormClickHandler = (evt) => {
+  #closingEditingFormClickHandler = (evt) => {
     evt.preventDefault();
-    this.#onEditingFormClick();
+    this.#onEditingModeToggleClick();
   };
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#onEditingFormSubmit();
+    this.#onEditingFormSubmit(this.#event);
   };
 }
