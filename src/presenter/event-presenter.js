@@ -63,10 +63,12 @@ export default class EventPresenter {
 
     if (!this.#isEditingMode) {
       replace(this.#eventComponent, prevEventComponent);
-    }
-    if (this.#isEditingMode) {
+    } else {
       replace(this.#eventEditingFormComponent, prevEventEditingFormComponent);
     }
+    // if (this.#isEditingMode) {
+    //   replace(this.#eventEditingFormComponent, prevEventEditingFormComponent);
+    // }
 
     remove(prevEventComponent);
     remove(prevEventEditingFormComponent);
@@ -90,6 +92,7 @@ export default class EventPresenter {
   };
 
   #replaceEditFormToEvent = () => {
+    document.removeEventListener('keydown', this.#onEscapeKeyDown);
     replace(this.#eventComponent, this.#eventEditingFormComponent);
     this.#isEditingMode = false;
   };
@@ -101,13 +104,11 @@ export default class EventPresenter {
 
   #onEditingModeToggleClick = () => {
     this.#replaceEditFormToEvent();
-    document.removeEventListener('keydown', this.#onEscapeKeyDown);
   };
 
   #onEditingFormSubmit = () => {
     //TODO - ОТПРАВКА ФОРМЫ
     this.#replaceEditFormToEvent();
-    document.removeEventListener('keydown', this.#onEscapeKeyDown);
   };
 
   #onFavoriteClick = () => {

@@ -51,7 +51,10 @@ export default class BoardPresenter {
   #renderNoEvents = () => render(this.#noEventsComponent, this.#boardContainer);
 
   #renderSort = () => {
-    this.#sortComponent = new SortView({ onSortClick: this.#onSortClick });
+    this.#sortComponent = new SortView({
+      onSortClick: this.#onSortClick,
+      currentSortingType: this.#currentSortingType,
+    });
     render(this.#sortComponent, this.#boardContainer);
   };
 
