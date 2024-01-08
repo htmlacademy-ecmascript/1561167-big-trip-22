@@ -4,6 +4,8 @@ import SortView from '../view/sort-view';
 import NoEventsView from '../view/no-events-view';
 import EventPresenter from './event-presenter';
 import { updateItem } from '../utils/common';
+import { PRESET_SORTING_TYPE, TypesSorting } from '../const';
+import { compareByDuration, compareByPrice } from '../utils/events';
 
 export default class BoardPresenter {
   #boardContainer = null;
@@ -13,9 +15,12 @@ export default class BoardPresenter {
 
   #boardEvents = [];
   #eventsContainerComponent = new EventsContainerView();
-  #sortComponent = new SortView();
   #noEventsComponent = new NoEventsView();
   #eventPresenters = new Map();
+
+  #sortComponent = null;
+  #currentSortingType = PRESET_SORTING_TYPE;
+  #initialStateEvents = [];
 
   constructor(board) {
     const { boardContainer, eventsModel, destinationsModel, offerrsModel } =
@@ -28,7 +33,8 @@ export default class BoardPresenter {
   }
 
   init = () => {
-    this.#boardEvents = [...this.#eventsModel.all];
+    this.#initialStateEvents = [...this.#eventsModel.all];
+    this.#boardEvents = [...this.#initialStateEvents];
     this.#renderBoard();
   };
 
@@ -44,7 +50,10 @@ export default class BoardPresenter {
 
   #renderNoEvents = () => render(this.#noEventsComponent, this.#boardContainer);
 
-  #renderSort = () => render(this.#sortComponent, this.#boardContainer);
+  #renderSort = () => {
+    this.#sortComponent = new SortView({ onSortClick: this.#onSortClick });
+    render(this.#sortComponent, this.#boardContainer);
+  };
 
   #renderListEvents = () => {
     render(this.#eventsContainerComponent, this.#boardContainer);
@@ -77,12 +86,41 @@ export default class BoardPresenter {
     this.#eventPresenters.clear();
   };
 
+  #sortEvent = (typeSorting) => {
+    switch (typeSorting) {
+      case TypesSorting.TIME:
+        this.#boardEvents.sort(compareByDuration);
+        break;
+      case TypesSorting.PRICE:
+        this.#boardEvents.sort(compareByPrice);
+        break;
+      default:
+        this.#boardEvents = [...this.#initialStateEvents];
+        break;
+    }
+  };
+
   #onEventChange = (updateEvent) => {
     this.#boardEvents = updateItem(this.#boardEvents, updateEvent);
+    this.#initialStateEvents = updateItem(
+      this.#initialStateEvents,
+      updateEvent
+    );
     this.#eventPresenters.get(updateEvent.id).init(updateEvent);
   };
 
   #onModeChange = () => {
     this.#eventPresenters.forEach((presenter) => presenter.resetView());
+  };
+
+  #onSortClick = (typeSorting) => {
+    if (this.#currentSortingType === typeSorting) {
+      return;
+    }
+
+    this.#currentSortingType = typeSorting;
+    this.#sortEvent(typeSorting);
+    this.#clearListEvents();
+    this.#renderListEvents();
   };
 }
