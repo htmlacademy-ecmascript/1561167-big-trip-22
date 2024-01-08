@@ -6,4 +6,6 @@ const isEscapeKey = (evt) => evt.key === 'Escape';
 const updateItem = (items, newItem) =>
   items.map((item) => (item.id === newItem.id ? newItem : item));
 
-export { getRandomArrayElement, isEscapeKey, updateItem };
+const getLowerCase = (string) => string.toLowerCase();
+
+export { getRandomArrayElement, isEscapeKey, updateItem, getLowerCase };
