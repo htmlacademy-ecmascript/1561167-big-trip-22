@@ -8,4 +8,15 @@ const updateItem = (items, newItem) =>
 
 const getLowerCase = (string) => string.toLowerCase();
 
-export { getRandomArrayElement, isEscapeKey, updateItem, getLowerCase };
+const getCapitalLetter = (string) => string[0] + string.slice(1);
+
+const getUpperCase = (string) => string.toUpperCase();
+
+export {
+  getRandomArrayElement,
+  isEscapeKey,
+  updateItem,
+  getLowerCase,
+  getCapitalLetter,
+  getUpperCase,
+};

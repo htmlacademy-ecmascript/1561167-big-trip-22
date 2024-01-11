@@ -3,7 +3,7 @@ import EventsContainerView from '../view/events-container-view';
 import SortView from '../view/sort-view';
 import NoEventsView from '../view/no-events-view';
 import EventPresenter from './event-presenter';
-import { updateItem } from '../utils/common';
+import { getLowerCase, updateItem } from '../utils/common';
 import { PRESET_SORTING_TYPE, TypesSorting } from '../const';
 import { compareByDuration, compareByPrice } from '../utils/events';
 
@@ -19,7 +19,7 @@ export default class BoardPresenter {
   #eventPresenters = new Map();
 
   #sortComponent = null;
-  #currentSortingType = PRESET_SORTING_TYPE;
+  #currentSortingType = getLowerCase(PRESET_SORTING_TYPE);
   #initialStateEvents = [];
 
   constructor(board) {
@@ -91,10 +91,10 @@ export default class BoardPresenter {
 
   #sortEvent = (typeSorting) => {
     switch (typeSorting) {
-      case TypesSorting.TIME:
+      case getLowerCase(TypesSorting.TIME):
         this.#boardEvents.sort(compareByDuration);
         break;
-      case TypesSorting.PRICE:
+      case getLowerCase(TypesSorting.PRICE):
         this.#boardEvents.sort(compareByPrice);
         break;
       default:

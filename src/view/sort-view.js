@@ -1,6 +1,6 @@
 import AbstractView from '../framework/view/abstract-view';
 import { TypesSorting } from '../const';
-import { getLowerCase } from '../utils/common';
+import { getLowerCase, getUpperCase } from '../utils/common';
 
 const createListSortTemplate = (currentSortingType) => `
   <form class="trip-events__trip-sort  trip-sort" action="#" method="get">
@@ -13,7 +13,7 @@ const createListSortTemplate = (currentSortingType) => `
       <label class="trip-sort__btn"
       for="sort-${getLowerCase(TypesSorting.DAY)}"
       data-type-sorting="${getLowerCase(TypesSorting.DAY)}"
-      >${TypesSorting.DAY}</label>
+      >${getUpperCase(TypesSorting.DAY)}</label>
     </div>
 
     <div class="trip-sort__item  trip-sort__item--event">
@@ -30,7 +30,7 @@ const createListSortTemplate = (currentSortingType) => `
       <label class="trip-sort__btn"
       for="sort-${getLowerCase(TypesSorting.TIME)}"
       data-type-sorting="${getLowerCase(TypesSorting.TIME)}"
-      >${TypesSorting.TIME}</label>
+      >${getUpperCase(TypesSorting.TIME)}</label>
     </div>
 
     <div class="trip-sort__item  trip-sort__item--price">
@@ -41,8 +41,8 @@ const createListSortTemplate = (currentSortingType) => `
       ${currentSortingType === TypesSorting.PRICE ? 'checked' : ''}>
       <label class="trip-sort__btn"
       for="sort-${getLowerCase(TypesSorting.PRICE)}"
-      data-type-sorting="${TypesSorting.PRICE}"
-      >${TypesSorting.PRICE}</label>
+      data-type-sorting="${getLowerCase(TypesSorting.PRICE)}"
+      >${getUpperCase(TypesSorting.PRICE)}</label>
     </div>
 
     <div class="trip-sort__item  trip-sort__item--offer">
@@ -78,11 +78,11 @@ export default class SortView extends AbstractView {
       return;
     }
 
-    const datasetTarget = evt.target.dataset.typeSorting;
+    const typeSortingTarget = evt.target.dataset.typeSorting;
 
     this.#sortingNodes.forEach(
-      (item) => (item.checked = item.id === `sort-${datasetTarget}`)
+      (item) => (item.checked = item.id === `sort-${typeSortingTarget}`)
     );
-    this.#onSortClick(datasetTarget);
+    this.#onSortClick(typeSortingTarget);
   };
 }
