@@ -14,7 +14,9 @@ const filterContainerNode = tripHeaderNode.querySelector(
 const eventsContainerNode = document.querySelector('.trip-events');
 
 const eventsModel = new EventsModel(
-  Array.from({ length: TEST_EVENTS_COUNT }, loadRandomEvent)
+  Array.from({ length: TEST_EVENTS_COUNT }, loadRandomEvent).sort(
+    (eventA, eventB) => new Date(eventA.dateFrom) - new Date(eventB.dateFrom)
+  )
 );
 const destinationsModel = new DestinationsModel(loadDestinations());
 const offerrsModel = new OffersModel(loadOffers());

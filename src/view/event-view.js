@@ -116,7 +116,7 @@ export default class EventView extends AbstractView {
       .addEventListener('click', this.#eventModeToggleClickHandler);
     this.element
       .querySelector('.event__favorite-btn')
-      .addEventListener('click', this.#favoritClickHandle);
+      .addEventListener('click', this.#favoritClickHandler);
   }
 
   get template() {
@@ -132,7 +132,7 @@ export default class EventView extends AbstractView {
     this.#onEventModeToggleClick();
   };
 
-  #favoritClickHandle = (evt) => {
+  #favoritClickHandler = (evt) => {
     evt.preventDefault();
     this.#onFavoriteClick();
   };

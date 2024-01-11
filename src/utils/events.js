@@ -15,6 +15,9 @@ import {
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
 
+const getDurationEvent = (dateFrom, dateTo) =>
+  dayjs(dateTo).diff(dayjs(dateFrom));
+
 const humanizeDateCalendarFormat = (date) =>
   date ? dayjs(date).format(DATE_EVENT_TEMPLATE) : '';
 
@@ -27,7 +30,7 @@ const humanizeDateShortFormat = (
 ) => (date ? dayjs(date).format(template) : '');
 
 const humanizeDurationEvent = ({ dateFrom, dateTo }) => {
-  const diffTimeshtamp = dayjs(dateTo).diff(dayjs(dateFrom));
+  const diffTimeshtamp = getDurationEvent(dateFrom, dateTo);
 
   if (diffTimeshtamp >= MSEC_IN_DAY) {
     return dayjs.duration(diffTimeshtamp).format(LONG_EVENT_DURATION_TEMPLATE);
@@ -47,6 +50,15 @@ const isCurrentEvent = (event) =>
 
 const isCompletedEvent = (event) => dayjs().isAfter(event.dateTo);
 
+const compareByDuration = (eventA, eventB) => {
+  const durrationEventA = getDurationEvent(eventA.dateFrom, eventA.dateTo);
+  const durrationEventB = getDurationEvent(eventB.dateFrom, eventB.dateTo);
+
+  return durrationEventB - durrationEventA;
+};
+
+const compareByPrice = (eventA, eventB) => eventB.basePrice - eventA.basePrice;
+
 export {
   humanizeDateCalendarFormat,
   humanizeDurationEvent,
@@ -55,4 +67,6 @@ export {
   isPlannedEvent,
   isCurrentEvent,
   isCompletedEvent,
+  compareByDuration,
+  compareByPrice,
 };

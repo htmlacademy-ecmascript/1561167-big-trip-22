@@ -35,6 +35,14 @@ const TypesFilters = {
   PAST: 'Past',
 };
 
+const TypesSorting = {
+  DAY: 'day',
+  TIME: 'time',
+  PRICE: 'price',
+};
+
+const PRESET_SORTING_TYPE = TypesSorting.DAY;
+
 const TEST_EVENT_ID = '22';
 const TEST_EVENTS_COUNT = 5;
 
@@ -54,4 +62,6 @@ export {
   MSEC_IN_DAY,
   MSEC_IN_HOUR,
   TypesFilters,
+  TypesSorting,
+  PRESET_SORTING_TYPE,
 };
