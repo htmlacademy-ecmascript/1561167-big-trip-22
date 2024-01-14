@@ -65,15 +65,15 @@ export default class BoardPresenter {
 
   #renderEvent = (event) => {
     const destination = this.#destinationModel.getById(event.destination);
-    const offers = this.#offersModel.getByType(event.type);
-    const eventOffers = this.#offersModel.getSelectedOnes({
-      eventType: event.type,
-      eventOffers: event.offers,
-    });
+    const offers = this.#offersModel.all;
+    // const eventOffers = this.#offersModel.getSelectedOnes({
+    //   eventType: event.type,
+    //   eventOffers: event.offers,
+    // });
     const eventPresenter = new EventPresenter({
       destination,
       offers,
-      eventOffers,
+      // eventOffers,
       titles: this.#destinationModel.names,
       eventsContainer: this.#eventsContainerComponent.element,
       onEventChange: this.#onEventChange,

@@ -46,6 +46,10 @@ const createEventTemplate = ({ event, destination, offers }) => {
     isFavorite,
   } = event;
   const name = destination?.name ?? '';
+  const eventOffers = offers.find((item) => item.type === type)?.offers ?? [];
+  const selectedOffers = eventOffers.filter(({ id }) =>
+    event.offers.includes(id)
+  );
   return `
   <li class="trip-events__item">
     <div class="event">
@@ -71,10 +75,10 @@ const createEventTemplate = ({ event, destination, offers }) => {
       </div>
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">
-        ${basePrice + getTotalCostOffers(offers)}</span>
+        ${basePrice + getTotalCostOffers(selectedOffers)}</span>
       </p>
       <h4 class="visually-hidden">Offers:</h4>
-      ${createListOffersTemplate(offers)}
+      ${createListOffersTemplate(selectedOffers)}
       <button class="event__favorite-btn
       ${isFavorite ? ' event__favorite-btn--active' : ''}" type="button">
         <span class="visually-hidden">Add to favorite</span>

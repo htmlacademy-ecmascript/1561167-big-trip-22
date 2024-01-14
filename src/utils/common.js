@@ -8,7 +8,7 @@ const updateItem = (items, newItem) =>
 
 const getLowerCase = (string) => string.toLowerCase();
 
-const getCapitalLetter = (string) => string[0] + string.slice(1);
+const getCapitalLetter = (string) => string[0].toUpperCase() + string.slice(1);
 
 const getUpperCase = (string) => string.toUpperCase();
 

@@ -19,7 +19,7 @@ export default class EventPresenter {
   constructor({
     destination,
     offers,
-    eventOffers,
+    // eventOffers,
     titles,
     eventsContainer,
     onEventChange,
@@ -27,7 +27,7 @@ export default class EventPresenter {
   }) {
     this.#destination = destination;
     this.#offers = offers;
-    this.#eventOffers = eventOffers;
+    // this.#eventOffers = eventOffers;
     this.#titles = titles;
     this.#eventsContainer = eventsContainer;
     this.#onEventChange = onEventChange;
@@ -43,7 +43,7 @@ export default class EventPresenter {
     this.#eventComponent = new EventView({
       event: this.#event,
       destination: this.#destination,
-      offers: this.#eventOffers,
+      offers: [...this.#offers],
       onEventModeToggleClick: this.#onEventModeToggleClick,
       onFavoriteClick: this.#onFavoriteClick,
     });
@@ -51,7 +51,7 @@ export default class EventPresenter {
       event: this.#event,
       destination: this.#destination,
       titles: this.#titles,
-      offers: this.#offers,
+      offers: [...this.#offers],
       onEditingModeToggleClick: this.#onEditingModeToggleClick,
       onEditingFormSubmit: this.#onEditingFormSubmit,
     });
