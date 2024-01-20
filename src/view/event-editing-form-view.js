@@ -1,7 +1,11 @@
 import { PRESET_EVENT_POINT_TYPE, TYPES_EVENTS } from '../const';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import { getCapitalLetter, getLowerCase } from '../utils/common';
-import { humanizeDateCalendarFormat } from '../utils/events';
+import {
+  getDestinationById,
+  getNameDeatination,
+  humanizeDateCalendarFormat,
+} from '../utils/events';
 
 const createEventTypeList = (type) => {
   const createEventTypeItem = (item) => `
@@ -90,6 +94,7 @@ const createListOffersTemplate = ({ offers, event }) => {
 			<input class="event__offer-checkbox  visually-hidden"
       id="event-offer-${id.slice(0, 7)}"
       type="checkbox" name="event-offer-${id.slice(0, 7)}"
+      data-id-offer="${id}"
       ${isChecked(id) ? 'checked' : ''}>
 			<label class="event__offer-label" for="event-offer-${id.slice(0, 7)}">
 				<span class="event__offer-title">${title}</span>
@@ -127,13 +132,13 @@ const createFieldEventTypeTemplate = (type) => `
 	</div>
 `;
 
-const createFieldEventDestinationTemplate = ({ type, destination, titles }) => `
+const createFieldEventDestinationTemplate = ({ type, name, titles }) => `
 	<div class="event__field-group  event__field-group--destination">
 		<label class="event__label  event__type-output" for="event-destination-1">
 			${type ? type : PRESET_EVENT_POINT_TYPE}
 		</label>
 		<input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination"
-		value="${destination ? destination.name : ''}"
+		value="${name}"
 		list="destination-list-1">
 		${createListTitlesTemplate(titles)}
 	</div>
@@ -164,19 +169,26 @@ const createFieldEventPriceTemplate = ({ basePrice }) => `
 
 const createEventEditingFormTemplate = ({
   titles,
-  destination,
+  destinations,
   offers,
   state: event,
 }) => {
-  const { dateFrom, dateTo, type = PRESET_EVENT_POINT_TYPE } = event;
+  const {
+    destination: id,
+    dateFrom,
+    dateTo,
+    type = PRESET_EVENT_POINT_TYPE,
+  } = event;
   const eventOffers =
     offers.find((item) => getLowerCase(item.type) === type)?.offers ?? [];
+  const destination = getDestinationById({ id, destinations });
+  const name = getNameDeatination({ id, destinations });
   return `
   <li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
 				${createFieldEventTypeTemplate(type)}
-				${createFieldEventDestinationTemplate({ type, destination, titles })}
+				${createFieldEventDestinationTemplate({ type, name, titles })}
 				${createFieldEventDateTemplate({ dateFrom, dateTo })}
 				${createFieldEventPriceTemplate(event)}
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -186,8 +198,8 @@ const createEventEditingFormTemplate = ({
         </button>
       </header>
       <section class="event__details">
-      ${createListOffersTemplate({ offers: eventOffers, event })}
-      ${createDestinationTemplate(destination)}
+        ${createListOffersTemplate({ offers: eventOffers, event })}
+        ${createDestinationTemplate(destination)}
       </section>
     </form>
   </li>
@@ -195,16 +207,16 @@ const createEventEditingFormTemplate = ({
 };
 
 export default class EventEditingFormView extends AbstractStatefulView {
+  // #event = null;
   #titles = null;
-  #destination = null;
+  #destinations = null;
   #offers = null;
   #onEditingModeToggleClick = null;
   #onEditingFormSubmit = null;
 
   constructor(formPparameters) {
     const {
-      titles,
-      destination,
+      destinations,
       offers,
       event,
       onEditingModeToggleClick,
@@ -212,8 +224,7 @@ export default class EventEditingFormView extends AbstractStatefulView {
     } = formPparameters;
 
     super();
-    this.#titles = titles;
-    this.#destination = destination;
+    this.#destinations = destinations;
     this.#offers = offers;
     this.#onEditingModeToggleClick = onEditingModeToggleClick;
     this.#onEditingFormSubmit = onEditingFormSubmit;
@@ -223,13 +234,17 @@ export default class EventEditingFormView extends AbstractStatefulView {
   }
 
   get template() {
+    this.#titles = this.#destinations.map(({ name }) => name);
     return createEventEditingFormTemplate({
       titles: this.#titles,
-      destination: this.#destination,
+      destinations: this.#destinations,
       offers: this.#offers,
       state: this._state,
     });
   }
+
+  reset = (event) =>
+    this.updateElement(EventEditingFormView.parseEventToState(event));
 
   _restoreHandlers = () => {
     this.element
@@ -237,22 +252,52 @@ export default class EventEditingFormView extends AbstractStatefulView {
       .addEventListener('click', this.#closeEditingFormClickHandler);
     this.element
       .querySelector('form')
-      .addEventListener('submit', this.#formSubmitHandler);
+      .addEventListener('submit', this.#editingFormSubmitHandler);
     this.element
       .querySelector('.event__type-list')
-      .addEventListener('click', this.#changingEventTypeClickHandler);
+      .addEventListener('change', this.#typeEventChangeHandler);
+    this.element
+      .querySelector('.event__input--destination')
+      .addEventListener('change', this.#destinationEventChangeHandler);
+    this.element
+      .querySelector('.event__available-offers')
+      .addEventListener('change', this.#offersChangeHandler);
+    this.element
+      .querySelector('.event__input--price')
+      .addEventListener('input', this.#priceInputHandler);
   };
 
-  #changingEventTypeClickHandler = (evt) => {
+  #priceInputHandler = (evt) => {
+    evt.preventDefault();
+    this._setState({ basePrice: evt.target.value });
+  };
+
+  #destinationEventChangeHandler = (evt) => {
     evt.preventDefault();
 
-    const valueEventType = evt.target.previousElementSibling.value;
-    const type = getLowerCase(this._state.type);
-    if (!evt.target.closest('.event__type-item') || type === valueEventType) {
+    const destination = this.#destinations.find(
+      ({ name }) => name === evt.target.value
+    );
+    const idDestination = destination ? destination.id : null;
+    this.updateElement({
+      destination: idDestination,
+    });
+  };
+
+  #typeEventChangeHandler = (evt) => {
+    if (!evt.target.closest('.event__type-item')) {
       return;
     }
 
-    this.updateElement({ type: valueEventType, offers: [] });
+    this.updateElement({ type: evt.target.value, offers: [] });
+  };
+
+  #offersChangeHandler = () => {
+    const chekedOffers = [
+      ...this.element.querySelectorAll('.event__offer-checkbox:checked'),
+    ];
+    const idCheckedOffers = chekedOffers.map((offer) => offer.dataset.idOffer);
+    this._setState({ offers: idCheckedOffers });
   };
 
   #closeEditingFormClickHandler = (evt) => {
@@ -260,7 +305,7 @@ export default class EventEditingFormView extends AbstractStatefulView {
     this.#onEditingModeToggleClick();
   };
 
-  #formSubmitHandler = (evt) => {
+  #editingFormSubmitHandler = (evt) => {
     evt.preventDefault();
     this.#onEditingFormSubmit(
       EventEditingFormView.parseStateToEvent(this._state)
@@ -272,12 +317,8 @@ export default class EventEditingFormView extends AbstractStatefulView {
     type: getLowerCase(event.type),
   });
 
-  static parseStateToEvent = (state) => {
-    const event = { ...state };
-    // TODO: добавить логику
-    delete event.isNewEventType;
-    delete event.isNewDestination;
-
-    return event;
-  };
+  static parseStateToEvent = (state) => ({
+    ...state,
+    type: getCapitalLetter(state.type),
+  });
 }

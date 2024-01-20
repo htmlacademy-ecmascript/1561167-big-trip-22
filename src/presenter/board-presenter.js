@@ -10,7 +10,7 @@ import { compareByDuration, compareByPrice } from '../utils/events';
 export default class BoardPresenter {
   #boardContainer = null;
   #eventsModel = null;
-  #destinationModel = null;
+  #destinationsModel = null;
   #offersModel = null;
 
   #boardEvents = [];
@@ -28,7 +28,7 @@ export default class BoardPresenter {
 
     this.#boardContainer = boardContainer;
     this.#eventsModel = eventsModel;
-    this.#destinationModel = destinationsModel;
+    this.#destinationsModel = destinationsModel;
     this.#offersModel = offerrsModel;
   }
 
@@ -64,17 +64,9 @@ export default class BoardPresenter {
   };
 
   #renderEvent = (event) => {
-    const destination = this.#destinationModel.getById(event.destination);
-    const offers = this.#offersModel.all;
-    // const eventOffers = this.#offersModel.getSelectedOnes({
-    //   eventType: event.type,
-    //   eventOffers: event.offers,
-    // });
     const eventPresenter = new EventPresenter({
-      destination,
-      offers,
-      // eventOffers,
-      titles: this.#destinationModel.names,
+      destinations: this.#destinationsModel.all,
+      offers: this.#offersModel.all,
       eventsContainer: this.#eventsContainerComponent.element,
       onEventChange: this.#onEventChange,
       onModeChange: this.#onModeChange,

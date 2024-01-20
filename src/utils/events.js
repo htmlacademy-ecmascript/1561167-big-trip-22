@@ -59,6 +59,20 @@ const compareByDuration = (eventA, eventB) => {
 
 const compareByPrice = (eventA, eventB) => eventB.basePrice - eventA.basePrice;
 
+const getDestinationById = ({ id, destinations = [] }) => {
+  if (!destinations.length) {
+    return null;
+  }
+
+  return destinations.find(({ id: itemId }) => id === itemId);
+};
+
+const getNameDeatination = ({ id, destinations = [] }) => {
+  const destination = getDestinationById({ id, destinations });
+
+  return destination ? destination.name : '';
+};
+
 export {
   humanizeDateCalendarFormat,
   humanizeDurationEvent,
@@ -69,4 +83,6 @@ export {
   isCompletedEvent,
   compareByDuration,
   compareByPrice,
+  getDestinationById,
+  getNameDeatination,
 };
