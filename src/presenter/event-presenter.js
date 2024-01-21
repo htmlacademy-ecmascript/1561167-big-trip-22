@@ -5,10 +5,8 @@ import EventView from '../view/event-view';
 
 export default class EventPresenter {
   #event = null;
-  #destination = null;
+  #destinations = null;
   #offers = null;
-  #eventOffers = null;
-  #titles = null;
   #eventComponent = null;
   #eventEditingFormComponent = null;
   #eventsContainer = null;
@@ -17,18 +15,14 @@ export default class EventPresenter {
   #isEditingMode = false;
 
   constructor({
-    destination,
+    destinations,
     offers,
-    eventOffers,
-    titles,
     eventsContainer,
     onEventChange,
     onModeChange,
   }) {
-    this.#destination = destination;
+    this.#destinations = destinations;
     this.#offers = offers;
-    this.#eventOffers = eventOffers;
-    this.#titles = titles;
     this.#eventsContainer = eventsContainer;
     this.#onEventChange = onEventChange;
     this.#onModeChange = onModeChange;
@@ -42,16 +36,15 @@ export default class EventPresenter {
 
     this.#eventComponent = new EventView({
       event: this.#event,
-      destination: this.#destination,
-      offers: this.#eventOffers,
+      destinations: [...this.#destinations],
+      offers: [...this.#offers],
       onEventModeToggleClick: this.#onEventModeToggleClick,
       onFavoriteClick: this.#onFavoriteClick,
     });
     this.#eventEditingFormComponent = new EventEditingFormView({
       event: this.#event,
-      destination: this.#destination,
-      titles: this.#titles,
-      offers: this.#offers,
+      destinations: [...this.#destinations],
+      offers: [...this.#offers],
       onEditingModeToggleClick: this.#onEditingModeToggleClick,
       onEditingFormSubmit: this.#onEditingFormSubmit,
     });
@@ -66,9 +59,6 @@ export default class EventPresenter {
     } else {
       replace(this.#eventEditingFormComponent, prevEventEditingFormComponent);
     }
-    // if (this.#isEditingMode) {
-    //   replace(this.#eventEditingFormComponent, prevEventEditingFormComponent);
-    // }
 
     remove(prevEventComponent);
     remove(prevEventEditingFormComponent);
@@ -81,6 +71,7 @@ export default class EventPresenter {
 
   resetView = () => {
     if (this.#isEditingMode) {
+      this.#eventEditingFormComponent.reset(this.#event);
       this.#replaceEditFormToEvent();
     }
   };
@@ -123,6 +114,7 @@ export default class EventPresenter {
       return;
     }
     evt.preventDefault();
+    this.#eventEditingFormComponent.reset(this.#event);
     this.#replaceEditFormToEvent();
     document.removeEventListener('keydown', this.#onEscapeKeyDown);
   };

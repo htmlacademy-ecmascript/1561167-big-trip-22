@@ -4,6 +4,7 @@ import {
   humanizeDurationEvent,
   humanizeDateShortFormat,
   humanizeDateTimeFormat,
+  getNameDeatination,
 } from '../utils/events';
 
 const getTotalCostOffers = (offers) => {
@@ -37,15 +38,21 @@ const createListOffersTemplate = (offers) => {
   `;
 };
 
-const createEventTemplate = ({ event, destination, offers }) => {
+const createEventTemplate = ({ event, destinations, offers }) => {
   const {
+    destination,
     dateFrom,
     dateTo,
     type = PRESET_EVENT_POINT_TYPE,
     basePrice,
     isFavorite,
   } = event;
-  const name = destination?.name ?? '';
+
+  const name = getNameDeatination({ id: destination, destinations });
+  const eventOffers = offers.find((item) => item.type === type)?.offers ?? [];
+  const selectedOffers = eventOffers.filter(({ id }) =>
+    event.offers.includes(id)
+  );
   return `
   <li class="trip-events__item">
     <div class="event">
@@ -71,10 +78,10 @@ const createEventTemplate = ({ event, destination, offers }) => {
       </div>
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">
-        ${basePrice + getTotalCostOffers(offers)}</span>
+        ${basePrice + getTotalCostOffers(selectedOffers)}</span>
       </p>
       <h4 class="visually-hidden">Offers:</h4>
-      ${createListOffersTemplate(offers)}
+      ${createListOffersTemplate(selectedOffers)}
       <button class="event__favorite-btn
       ${isFavorite ? ' event__favorite-btn--active' : ''}" type="button">
         <span class="visually-hidden">Add to favorite</span>
@@ -92,21 +99,21 @@ const createEventTemplate = ({ event, destination, offers }) => {
 
 export default class EventView extends AbstractView {
   #event = null;
-  #destination = null;
+  #destinations = null;
   #offers = null;
   #onEventModeToggleClick = null;
   #onFavoriteClick = null;
 
   constructor({
     event,
-    destination,
+    destinations,
     offers,
     onEventModeToggleClick,
     onFavoriteClick,
   }) {
     super();
     this.#event = event;
-    this.#destination = destination;
+    this.#destinations = destinations;
     this.#offers = offers;
     this.#onEventModeToggleClick = onEventModeToggleClick;
     this.#onFavoriteClick = onFavoriteClick;
@@ -122,7 +129,7 @@ export default class EventView extends AbstractView {
   get template() {
     return createEventTemplate({
       event: this.#event,
-      destination: this.#destination,
+      destinations: this.#destinations,
       offers: this.#offers,
     });
   }
