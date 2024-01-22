@@ -6,6 +6,9 @@ import {
   getNameDeatination,
   humanizeDateCalendarFormat,
 } from '../utils/events';
+import flatpicker from 'flatpickr';
+
+import 'flatpickr/dist/flatpickr.min.css';
 
 const createEventTypeList = (type) => {
   const createEventTypeItem = (item) => `
@@ -207,12 +210,13 @@ const createEventEditingFormTemplate = ({
 };
 
 export default class EventEditingFormView extends AbstractStatefulView {
-  // #event = null;
   #titles = null;
   #destinations = null;
   #offers = null;
   #onEditingModeToggleClick = null;
   #onEditingFormSubmit = null;
+  #dateFromPicker = null;
+  #dateToPicker = null;
 
   constructor(formPparameters) {
     const {
@@ -246,6 +250,18 @@ export default class EventEditingFormView extends AbstractStatefulView {
   reset = (event) =>
     this.updateElement(EventEditingFormView.parseEventToState(event));
 
+  removeElement = () => {
+    super.removeElement();
+    if (this.#dateFromPicker) {
+      this.#dateFromPicker.destroy();
+      this.#dateFromPicker = null;
+    }
+    if (this.#dateToPicker) {
+      this.#dateToPicker.destroy();
+      this.#dateToPicker = null;
+    }
+  };
+
   _restoreHandlers = () => {
     this.element
       .querySelector('.event__rollup-btn')
@@ -265,6 +281,47 @@ export default class EventEditingFormView extends AbstractStatefulView {
     this.element
       .querySelector('.event__input--price')
       .addEventListener('input', this.#priceInputHandler);
+
+    this.#initDatePicker();
+  };
+
+  #initDatePicker = () => {
+    const KEY = 'time_24hr';
+    const commonOptions = {
+      dateFormat: 'd/m/y H:i',
+      enableTime: true,
+      locale: { firstDayOfWeek: 1 },
+      [KEY]: true,
+    };
+
+    this.#dateFromPicker = flatpicker(
+      this.element.querySelector('input[name="event-start-time"]'),
+      {
+        ...commonOptions,
+        defaultDate: this._state.dateFrom,
+        onClose: this.#dateFromCloseHandler,
+        maxDate: this._state.dateTo,
+      }
+    );
+    this.#dateToPicker = flatpicker(
+      this.element.querySelector('input[name="event-end-time"]'),
+      {
+        ...commonOptions,
+        defaultDate: this._state.dateTo,
+        onClose: this.#dateToCloseHandler,
+        minDate: this._state.dateFrom,
+      }
+    );
+  };
+
+  #dateFromCloseHandler = ([userDate]) => {
+    this._setState({ dateFrom: userDate });
+    this.#dateToPicker.set('minDate', this._state.dateFrom);
+  };
+
+  #dateToCloseHandler = ([userDate]) => {
+    this._setState({ dateTo: userDate });
+    this.#dateFromPicker.set('maxDate', this._state.dateTo);
   };
 
   #priceInputHandler = (evt) => {
