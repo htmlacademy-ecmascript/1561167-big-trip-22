@@ -35,7 +35,7 @@ const getGlobalCostTrip = ({ events, offers: allOffers }) => {
 
 const getInitialFinalDestination = ({ events, destinations }) => {
   const getNameCityEvent = ({ event, points }) =>
-    points.find(({ id }) => id === event.destination).name;
+    points.find(({ id }) => id === event.destination)?.name;
 
   if (!events.length) {
     return '';

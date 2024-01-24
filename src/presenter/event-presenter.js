@@ -41,6 +41,7 @@ export default class EventPresenter {
       onEventModeToggleClick: this.#onEventModeToggleClick,
       onFavoriteClick: this.#onFavoriteClick,
     });
+
     this.#eventEditingFormComponent = new EventEditingFormView({
       event: this.#event,
       destinations: [...this.#destinations],

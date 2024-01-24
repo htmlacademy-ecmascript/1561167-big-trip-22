@@ -14,13 +14,13 @@ export default class BoardPresenter {
   #offersModel = null;
 
   #boardEvents = [];
+  #initialStateEvents = [];
   #eventsContainerComponent = new EventsContainerView();
   #noEventsComponent = new NoEventsView();
   #eventPresenters = new Map();
 
   #sortComponent = null;
   #currentSortingType = getLowerCase(PRESET_SORTING_TYPE);
-  #initialStateEvents = [];
 
   constructor(board) {
     const { boardContainer, eventsModel, destinationsModel, offerrsModel } =

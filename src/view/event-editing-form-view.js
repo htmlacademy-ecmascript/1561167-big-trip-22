@@ -107,7 +107,7 @@ const createListOffersTemplate = ({ offers, event }) => {
 		</div>
   `;
 
-  if (!offers || !offers.length) {
+  if (!offers.length) {
     return '';
   }
 
@@ -127,11 +127,11 @@ const createFieldEventTypeTemplate = (type) => `
 		<label class="event__type  event__type-btn" for="event-type-toggle-1">
 			<span class="visually-hidden">Choose event type</span>
 			<img class="event__type-icon" width="17" height="17"
-      src="img/icons/${getLowerCase(type)}.png"
+      src="img/icons/${type}.png"
       alt="Event type icon">
 		</label>
 		<input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
-		${createEventTypeList(getLowerCase(type))}
+		${createEventTypeList(type)}
 	</div>
 `;
 
@@ -173,7 +173,7 @@ const createFieldEventPriceTemplate = ({ basePrice }) => `
 const createEventEditingFormTemplate = ({
   titles,
   destinations,
-  offers,
+  eventOffers,
   state: event,
 }) => {
   const {
@@ -182,8 +182,7 @@ const createEventEditingFormTemplate = ({
     dateTo,
     type = PRESET_EVENT_POINT_TYPE,
   } = event;
-  const eventOffers =
-    offers.find((item) => getLowerCase(item.type) === type)?.offers ?? [];
+  // TODO
   const destination = getDestinationById({ id, destinations });
   const name = getNameDeatination({ id, destinations });
   return `
@@ -210,6 +209,7 @@ const createEventEditingFormTemplate = ({
 };
 
 export default class EventEditingFormView extends AbstractStatefulView {
+  #eventOffers = null;
   #titles = null;
   #destinations = null;
   #offers = null;
@@ -239,10 +239,12 @@ export default class EventEditingFormView extends AbstractStatefulView {
 
   get template() {
     this.#titles = this.#destinations.map(({ name }) => name);
+    this.#eventOffers =
+      this.#offers.find(({ type }) => type === this._state.type)?.offers ?? [];
     return createEventEditingFormTemplate({
       titles: this.#titles,
       destinations: this.#destinations,
-      offers: this.#offers,
+      eventOffers: this.#eventOffers,
       state: this._state,
     });
   }
@@ -276,12 +278,13 @@ export default class EventEditingFormView extends AbstractStatefulView {
       .querySelector('.event__input--destination')
       .addEventListener('change', this.#destinationEventChangeHandler);
     this.element
-      .querySelector('.event__available-offers')
-      .addEventListener('change', this.#offersChangeHandler);
-    this.element
       .querySelector('.event__input--price')
       .addEventListener('input', this.#priceInputHandler);
-
+    if (this.#eventOffers.length) {
+      this.element
+        .querySelector('.event__available-offers')
+        .addEventListener('change', this.#offersChangeHandler);
+    }
     this.#initDatePicker();
   };
 
@@ -369,13 +372,7 @@ export default class EventEditingFormView extends AbstractStatefulView {
     );
   };
 
-  static parseEventToState = (event) => ({
-    ...event,
-    type: getLowerCase(event.type),
-  });
+  static parseEventToState = (event) => event;
 
-  static parseStateToEvent = (state) => ({
-    ...state,
-    type: getCapitalLetter(state.type),
-  });
+  static parseStateToEvent = (state) => state;
 }
