@@ -32,14 +32,18 @@ export default class BoardPresenter {
     this.#offersModel = offerrsModel;
   }
 
+  get events() {
+    return this.#eventsModel.events;
+  }
+
   init = () => {
-    this.#initialStateEvents = [...this.#eventsModel.all];
+    this.#initialStateEvents = [...this.#eventsModel.events];
     this.#boardEvents = [...this.#initialStateEvents];
     this.#renderBoard();
   };
 
   #renderBoard = () => {
-    if (this.#eventsModel.isEmpty) {
+    if (!this.#boardEvents.length) {
       this.#renderNoEvents();
       return;
     }

@@ -15,7 +15,7 @@ const eventsContainerNode = document.querySelector('.trip-events');
 const eventsModel = new EventsModel(loadRandomEvent());
 const destinationsModel = new DestinationsModel(loadDestinations());
 const offerrsModel = new OffersModel(loadOffers());
-const filters = generateFilter(eventsModel.all);
+const filters = generateFilter(eventsModel.events);
 
 const headerPresenter = new HeaderPresenter({
   tripHeaderContainer: tripHeaderNode,
