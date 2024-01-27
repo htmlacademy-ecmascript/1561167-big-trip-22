@@ -11,7 +11,7 @@ export default class EventPresenter {
   #eventComponent = null;
   #eventEditingFormComponent = null;
   #eventsContainer = null;
-  #onEventChange = null;
+  #onDataChange = null;
   #onModeChange = null;
   #isEditingMode = false;
 
@@ -19,13 +19,13 @@ export default class EventPresenter {
     destinations,
     offers,
     eventsContainer,
-    onEventChange,
+    onDataChange,
     onModeChange,
   }) {
     this.#destinations = destinations;
     this.#offers = offers;
     this.#eventsContainer = eventsContainer;
-    this.#onEventChange = onEventChange;
+    this.#onDataChange = onDataChange;
     this.#onModeChange = onModeChange;
   }
 
@@ -99,13 +99,13 @@ export default class EventPresenter {
     this.#replaceEditFormToEvent();
   };
 
-  #onEditingFormSubmit = () => {
-    //TODO - ОТПРАВКА ФОРМЫ
+  #onEditingFormSubmit = (event) => {
+    this.#onDataChange(UserAction.UPDATE_EVENT, UpdateType.MINOR, event);
     this.#replaceEditFormToEvent();
   };
 
   #onFavoriteClick = () => {
-    this.#onEventChange({
+    this.#onDataChange(UserAction.UPDATE_EVENT, UpdateType.PATCH, {
       ...this.#event,
       isFavorite: !this.#event.isFavorite,
     });

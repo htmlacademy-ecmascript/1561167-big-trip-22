@@ -182,7 +182,6 @@ const createEventEditingFormTemplate = ({
     dateTo,
     type = PRESET_EVENT_POINT_TYPE,
   } = event;
-  // TODO
   const destination = getDestinationById({ id, destinations });
   const name = getNameDeatination({ id, destinations });
   return `

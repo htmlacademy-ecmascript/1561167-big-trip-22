@@ -3,7 +3,12 @@ import EventsContainerView from '../view/events-container-view';
 import SortView from '../view/sort-view';
 import NoEventsView from '../view/no-events-view';
 import EventPresenter from './event-presenter';
-import { PRESET_SORTING_TYPE, TypesSorting } from '../const';
+import {
+  PRESET_SORTING_TYPE,
+  TypesSorting,
+  UpdateType,
+  UserAction,
+} from '../const';
 import { compareByDuration, compareByPrice } from '../utils/events';
 
 export default class BoardPresenter {
@@ -75,7 +80,7 @@ export default class BoardPresenter {
       destinations: this.#destinationsModel.all,
       offers: this.#offersModel.all,
       eventsContainer: this.#eventsContainerComponent.element,
-      onEventChange: this.#onEventChange,
+      onDataChange: this.#onViewAction,
       onModeChange: this.#onModeChange,
     });
 
@@ -94,11 +99,31 @@ export default class BoardPresenter {
   };
 
   #onViewAction = (actionType, updateType, update) => {
-    console.log('#onViewAction:', actionType, updateType, update);
+    switch (actionType) {
+      case UserAction.UPDATE_EVENT:
+        this.#eventsModel.updateEvent(updateType, update);
+        break;
+      case UserAction.ADD_EVENT:
+        this.#eventsModel.addEvent(updateType, update);
+        break;
+      case UserAction.DELETE_EVENT_EVENT:
+        this.#eventsModel.deleteEvent(updateType, update);
+        break;
+    }
   };
 
   #onModelEvent = (updateType, data) => {
-    console.log('#onModelEvent:', updateType, data);
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this.#eventPresenters.get(data.id).init(data);
+        break;
+      case UpdateType.MINOR:
+        // - обновить список
+        break;
+      case UpdateType.MAJOR:
+        // - обновить всю доску
+        break;
+    }
   };
 
   #onModeChange = () => {
