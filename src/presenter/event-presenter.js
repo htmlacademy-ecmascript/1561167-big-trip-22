@@ -1,3 +1,4 @@
+import { UpdateType, UserAction } from '../const';
 import { remove, render, replace } from '../framework/render';
 import { isEscapeKey } from '../utils/common';
 import EventEditingFormView from '../view/event-editing-form-view';
