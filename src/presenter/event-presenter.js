@@ -37,16 +37,16 @@ export default class EventPresenter {
 
     this.#eventComponent = new EventView({
       event: this.#event,
-      destinations: [...this.#destinations],
-      offers: [...this.#offers],
+      destinations: this.#destinations,
+      offers: this.#offers,
       onEventModeToggleClick: this.#onEventModeToggleClick,
       onFavoriteClick: this.#onFavoriteClick,
     });
 
     this.#eventEditingFormComponent = new EventEditingFormView({
       event: this.#event,
-      destinations: [...this.#destinations],
-      offers: [...this.#offers],
+      destinations: this.#destinations,
+      offers: this.#offers,
       onEditingModeToggleClick: this.#onEditingModeToggleClick,
       onEditingFormSubmit: this.#onEditingFormSubmit,
     });

@@ -5,14 +5,14 @@ export default class DestinationsModel {
     this.#destinations = destinations;
   }
 
-  get all() {
+  get destinations() {
     return this.#destinations;
   }
 
-  get names() {
-    return this.#destinations.map(({ name }) => name);
-  }
+  // get names() {
+  //   return this.#destinations.map(({ name }) => name);
+  // }
 
-  getById = (destinationId) =>
-    this.#destinations.find(({ id }) => id === destinationId);
+  // getById = (destinationId) =>
+  //   this.#destinations.find(({ id }) => id === destinationId);
 }

@@ -77,8 +77,8 @@ export default class BoardPresenter {
 
   #renderEvent = (event) => {
     const eventPresenter = new EventPresenter({
-      destinations: this.#destinationsModel.all,
-      offers: this.#offersModel.all,
+      destinations: this.#destinationsModel.destinations,
+      offers: this.#offersModel.offers,
       eventsContainer: this.#eventsContainerComponent.element,
       onDataChange: this.#onViewAction,
       onModeChange: this.#onModeChange,
@@ -88,14 +88,9 @@ export default class BoardPresenter {
     eventPresenter.init(event);
   };
 
-  #clearListEvents = () => {
+  #clearBoard = () => {
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPresenters.clear();
-  };
-
-  #onEventChange = (updateEvent) => {
-    // this.events = updateItem(this.events, updateEvent);
-    this.#eventPresenters.get(updateEvent.id).init(updateEvent);
   };
 
   #onViewAction = (actionType, updateType, update) => {
@@ -118,10 +113,14 @@ export default class BoardPresenter {
         this.#eventPresenters.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
-        // - обновить список
+        //TODO - обновить список
+        this.#clearBoard();
+        this.#renderListEvents();
         break;
       case UpdateType.MAJOR:
-        // - обновить всю доску
+        //TODO - обновить всю доску
+        this.#clearBoard();
+        this.#renderListEvents();
         break;
     }
   };
@@ -136,7 +135,7 @@ export default class BoardPresenter {
     }
 
     this.#currentSortingType = typeSorting;
-    this.#clearListEvents();
+    this.#clearBoard();
     this.#renderListEvents();
   };
 }

@@ -1,4 +1,4 @@
-import { PRESET_EVENT_POINT_TYPE } from '../const';
+// import { PRESET_EVENT_POINT_TYPE } from '../const';
 
 export default class OffersModel {
   #offers = null;
@@ -7,16 +7,16 @@ export default class OffersModel {
     this.#offers = offers;
   }
 
-  get all() {
+  get offers() {
     return this.#offers;
   }
 
-  getByType = (eventType = PRESET_EVENT_POINT_TYPE) =>
-    this.#offers.find(({ type }) => type === eventType).offers;
+  // getByType = (eventType = PRESET_EVENT_POINT_TYPE) =>
+  //   this.#offers.find(({ type }) => type === eventType).offers;
 
-  getSelectedOnes = ({ eventType, eventOffers }) => {
-    const offers = this.getByType(eventType);
+  // getSelectedOnes = ({ eventType, eventOffers }) => {
+  //   const offers = this.getByType(eventType);
 
-    return offers.filter(({ id }) => eventOffers.includes(id));
-  };
+  //   return offers.filter(({ id }) => eventOffers.includes(id));
+  // };
 }

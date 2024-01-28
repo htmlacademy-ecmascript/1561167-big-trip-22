@@ -34,30 +34,24 @@ const getGlobalCostTrip = ({ events, offers: allOffers }) => {
 };
 
 const getInitialFinalDestination = ({ events, destinations }) => {
-  const getNameCityEvent = ({ event, points }) =>
+  const getNameDestination = ({ event, points }) =>
     points.find(({ id }) => id === event.destination)?.name;
 
   if (!events.length) {
     return '';
   }
 
-  const initialCity = getNameCityEvent({
-    event: events[0],
-    points: destinations,
-  });
-  if (events.length === 1) {
-    return initialCity;
+  const allTitles = events.map((event) =>
+    getNameDestination({ event, points: destinations })
+  );
+  const uniqueTitles = new Set(allTitles);
+
+  if (uniqueTitles.size > 3) {
+    const titles = [...uniqueTitles.values()];
+    return `${titles[0]} — ... — ${titles[titles.length - 1]}`;
   }
 
-  const finalCity = getNameCityEvent({
-    event: events[events.length - 1],
-    points: destinations,
-  });
-  if (events.length === 2) {
-    return `${initialCity} — ${finalCity}`;
-  }
-
-  return `${initialCity} — ... — ${finalCity}`;
+  return [...uniqueTitles].join(' — ');
 };
 
 const createInformationTripTemplate = ({ events, offers, destinations }) => {
