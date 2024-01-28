@@ -1,73 +1,63 @@
-import { TypesFilters } from '../const';
 import { RenderPosition, remove, render, replace } from '../framework/render';
-import FilterView from '../view/filter-view';
-import InformationTripView from '../view/information-trip-view';
+import HeaderView from '../view/header_view';
+import FilterPresenter from './filter-presenter';
 
 export default class HeaderPresenter {
   #eventsModel = null;
   #destinationsModel = null;
   #offersModel = null;
-  #tripHeaderContainer = null;
 
-  #filterContainer = null;
-  #filters = [];
-  #filterComponent = null;
-  #informationTripComponent = null;
+  #headerContainer = null;
+  #headerComponent = null;
+
+  #filterPresenter = null;
 
   constructor({
     eventsModel,
     destinationsModel,
     offerrsModel,
-    tripHeaderContainer,
+    filterModel,
+    headerContainer,
     filterContainer,
-    filters,
   }) {
     this.#eventsModel = eventsModel;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offerrsModel;
-    this.#tripHeaderContainer = tripHeaderContainer;
-    this.#filterContainer = filterContainer;
-    this.#filters = filters;
+    this.#headerContainer = headerContainer;
+    this.#filterPresenter = new FilterPresenter({
+      filterContainer,
+      filterModel,
+      eventsModel,
+    });
 
     this.#eventsModel.addObserver(this.#onModelEvent);
   }
 
   init = () => {
-    this.#informationTripComponent = new InformationTripView({
+    const prevHeaderComponent = this.#headerComponent;
+
+    this.#headerComponent = new HeaderView({
       events: this.#eventsModel.events,
       offers: this.#offersModel.offers,
       destinations: this.#destinationsModel.destinations,
     });
-    this.#filterComponent = new FilterView({
-      filters: this.#filters,
-      currentFilterType: TypesFilters.EVERYTHING,
-      onFilterTypeChange: (filterType) =>
-        console.log('HeaderPresenter  filterType:', filterType),
-    });
-    this.#renderHeader();
+
+    if (prevHeaderComponent === null) {
+      render(
+        this.#headerComponent,
+        this.#headerContainer,
+        RenderPosition.AFTERBEGIN
+      );
+      this.#filterPresenter.init();
+      return;
+    }
+
+    replace(this.#headerComponent, prevHeaderComponent);
+    remove(prevHeaderComponent);
+    this.#filterPresenter.init();
   };
 
   #onModelEvent = () => {
-    const newComponent = new InformationTripView({
-      events: this.#eventsModel.events,
-      offers: this.#offersModel.offers,
-      destinations: this.#destinationsModel.destinations,
-    });
-    replace(newComponent, this.#informationTripComponent);
-    this.#informationTripComponent = newComponent;
-  };
-
-  #renderHeader = () => {
-    render(
-      this.#informationTripComponent,
-      this.#tripHeaderContainer,
-      RenderPosition.AFTERBEGIN
-    );
-    render(this.#filterComponent, this.#filterContainer);
-  };
-
-  #destroy = () => {
-    remove(this.#filterComponent);
-    remove(this.#informationTripComponent);
+    this.init();
   };
 }

@@ -54,7 +54,7 @@ const getInitialFinalDestination = ({ events, destinations }) => {
   return [...uniqueTitles].join(' — ');
 };
 
-const createInformationTripTemplate = ({ events, offers, destinations }) => {
+const createHeaderTemplate = ({ events, offers, destinations }) => {
   if (!events.length) {
     return '';
   }
@@ -88,7 +88,7 @@ const createInformationTripTemplate = ({ events, offers, destinations }) => {
     </section>`;
 };
 
-export default class InformationTripView extends AbstractView {
+export default class HeaderView extends AbstractView {
   #offers = [];
   #events = [];
   #destinations = [];
@@ -101,7 +101,7 @@ export default class InformationTripView extends AbstractView {
   }
 
   get template() {
-    return createInformationTripTemplate({
+    return createHeaderTemplate({
       events: this.#events,
       offers: this.#offers,
       destinations: this.#destinations,

@@ -1,5 +1,7 @@
-import { TypesFilters } from '../const';
+import { TypesFilters, UpdateType } from '../const';
+import { remove, render, replace } from '../framework/render';
 import { filter } from '../utils/filter';
+import FilterView from '../view/filter-view';
 
 export default class FilterPresenter {
   #filterContainer = null;
@@ -14,7 +16,7 @@ export default class FilterPresenter {
     this.#eventsModel = eventsModel;
 
     this.#filterModel.addObserver(this.#onModelEvent);
-    this.#eventsModel.addObserver(this.#onModelEvent);
+    // this.#eventsModel.addObserver(this.#onModelEvent);
   }
 
   get filters() {
@@ -26,7 +28,34 @@ export default class FilterPresenter {
     }));
   }
 
-  init = () => {};
+  init = () => {
+    const filters = this.filters;
+    const prevFilterComponent = this.#filterComponent;
 
-  #onModelEvent = () => {};
+    this.#filterComponent = new FilterView({
+      filters,
+      currentFilterType: TypesFilters.EVERYTHING,
+      onFilterTypeChange: this.#onFilterTypeChange,
+    });
+
+    if (prevFilterComponent === null) {
+      render(this.#filterComponent, this.#filterContainer);
+      return;
+    }
+
+    replace(this.#filterComponent, prevFilterComponent);
+    remove(prevFilterComponent);
+  };
+
+  #onModelEvent = () => {
+    this.init();
+  };
+
+  #onFilterTypeChange = (filterType) => {
+    if (filterType === this.#filterModel.filter) {
+      return;
+    }
+
+    this.#filterModel.setFilter(UpdateType.MAJOR, filterType);
+  };
 }
