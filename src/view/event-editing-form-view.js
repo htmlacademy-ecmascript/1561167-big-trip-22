@@ -208,12 +208,15 @@ const createEventEditingFormTemplate = ({
 };
 
 export default class EventEditingFormView extends AbstractStatefulView {
-  #eventOffers = null;
-  #titles = null;
-  #destinations = null;
-  #offers = null;
+  #eventOffers = [];
+  #titles = [];
+  #destinations = [];
+  #offers = [];
+
   #onEditingModeToggleClick = null;
   #onEditingFormSubmit = null;
+  #onDeletingEditFormClick = null;
+
   #dateFromPicker = null;
   #dateToPicker = null;
 
@@ -224,6 +227,7 @@ export default class EventEditingFormView extends AbstractStatefulView {
       event,
       onEditingModeToggleClick,
       onEditingFormSubmit,
+      onDeletingEditFormClick,
     } = formPparameters;
 
     super();
@@ -231,6 +235,7 @@ export default class EventEditingFormView extends AbstractStatefulView {
     this.#offers = offers;
     this.#onEditingModeToggleClick = onEditingModeToggleClick;
     this.#onEditingFormSubmit = onEditingFormSubmit;
+    this.#onDeletingEditFormClick = onDeletingEditFormClick;
 
     this._setState(EventEditingFormView.parseEventToState(event));
     this._restoreHandlers();
@@ -279,6 +284,9 @@ export default class EventEditingFormView extends AbstractStatefulView {
     this.element
       .querySelector('.event__input--price')
       .addEventListener('input', this.#priceInputHandler);
+    this.element
+      .querySelector('.event__reset-btn')
+      .addEventListener('click', this.#deletingEditFormClickHandler);
     if (this.#eventOffers.length) {
       this.element
         .querySelector('.event__available-offers')
@@ -367,6 +375,13 @@ export default class EventEditingFormView extends AbstractStatefulView {
   #editingFormSubmitHandler = (evt) => {
     evt.preventDefault();
     this.#onEditingFormSubmit(
+      EventEditingFormView.parseStateToEvent(this._state)
+    );
+  };
+
+  #deletingEditFormClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#onDeletingEditFormClick(
       EventEditingFormView.parseStateToEvent(this._state)
     );
   };

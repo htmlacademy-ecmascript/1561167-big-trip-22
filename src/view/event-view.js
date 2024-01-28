@@ -99,8 +99,8 @@ const createEventTemplate = ({ event, destinations, offers }) => {
 
 export default class EventView extends AbstractView {
   #event = null;
-  #destinations = null;
-  #offers = null;
+  #destinations = [];
+  #offers = [];
   #onEventModeToggleClick = null;
   #onFavoriteClick = null;
 

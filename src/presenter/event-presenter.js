@@ -6,8 +6,8 @@ import EventView from '../view/event-view';
 
 export default class EventPresenter {
   #event = null;
-  #destinations = null;
-  #offers = null;
+  #destinations = [];
+  #offers = [];
   #eventComponent = null;
   #eventEditingFormComponent = null;
   #eventsContainer = null;
@@ -49,6 +49,7 @@ export default class EventPresenter {
       offers: this.#offers,
       onEditingModeToggleClick: this.#onEditingModeToggleClick,
       onEditingFormSubmit: this.#onEditingFormSubmit,
+      onDeletingEditFormClick: this.#onDeletingEditFormClick,
     });
 
     if (prevEventComponent === null || prevEventEditingFormComponent === null) {
@@ -101,6 +102,11 @@ export default class EventPresenter {
 
   #onEditingFormSubmit = (event) => {
     this.#onDataChange(UserAction.UPDATE_EVENT, UpdateType.MINOR, event);
+    this.#replaceEditFormToEvent();
+  };
+
+  #onDeletingEditFormClick = (event) => {
+    this.#onDataChange(UserAction.DELETE_EVENT, UpdateType.MAJOR, event);
     this.#replaceEditFormToEvent();
   };
 

@@ -29,10 +29,10 @@ const SHORT_EVENT_DURATION_TEMPLATE = 'mm[M]';
 const DATE_EVENT_TEMPLATE = 'DD/MM/YY hh:mm';
 
 const TypesFilters = {
-  EVERYTHING: 'Everything',
-  FUTURE: 'Future',
-  PRESENT: 'Present',
-  PAST: 'Past',
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PRESENT: 'present',
+  PAST: 'past',
 };
 
 const TypesSorting = {

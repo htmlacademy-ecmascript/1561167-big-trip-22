@@ -101,7 +101,7 @@ export default class BoardPresenter {
       case UserAction.ADD_EVENT:
         this.#eventsModel.addEvent(updateType, update);
         break;
-      case UserAction.DELETE_EVENT_EVENT:
+      case UserAction.DELETE_EVENT:
         this.#eventsModel.deleteEvent(updateType, update);
         break;
     }

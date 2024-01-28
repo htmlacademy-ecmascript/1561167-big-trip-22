@@ -1,3 +1,4 @@
+import { TypesFilters } from '../const';
 import { RenderPosition, remove, render, replace } from '../framework/render';
 import FilterView from '../view/filter-view';
 import InformationTripView from '../view/information-trip-view';
@@ -9,7 +10,7 @@ export default class HeaderPresenter {
   #tripHeaderContainer = null;
 
   #filterContainer = null;
-  #filters = null;
+  #filters = [];
   #filterComponent = null;
   #informationTripComponent = null;
 
@@ -37,7 +38,12 @@ export default class HeaderPresenter {
       offers: this.#offersModel.offers,
       destinations: this.#destinationsModel.destinations,
     });
-    this.#filterComponent = new FilterView(this.#filters);
+    this.#filterComponent = new FilterView({
+      filters: this.#filters,
+      currentFilterType: TypesFilters.EVERYTHING,
+      onFilterTypeChange: (filterType) =>
+        console.log('HeaderPresenter  filterType:', filterType),
+    });
     this.#renderHeader();
   };
 
