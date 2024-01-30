@@ -1,4 +1,4 @@
-import { render } from '../framework/render';
+import { remove, render } from '../framework/render';
 import EventsContainerView from '../view/events-container-view';
 import SortView from '../view/sort-view';
 import NoEventsView from '../view/no-events-view';
@@ -21,11 +21,12 @@ export default class BoardPresenter {
   #filterModel = null;
 
   #eventsContainerComponent = new EventsContainerView();
-  #noEventsComponent = new NoEventsView();
-  #eventPresenters = new Map();
-
+  #noEventsComponent = null;
   #sortComponent = null;
+
   #currentSortingType = PRESET_SORTING_TYPE;
+
+  #eventPresenters = new Map();
 
   constructor(board) {
     const {
@@ -47,9 +48,8 @@ export default class BoardPresenter {
   }
 
   get events() {
-    const currentFilterType = this.#filterModel.filter;
     const events = this.#eventsModel.events;
-    const filteredEvents = filter[currentFilterType](events);
+    const filteredEvents = filter[this.#filterModel.filter](events);
 
     switch (this.#currentSortingType) {
       case TypesSorting.TIME:
@@ -66,7 +66,7 @@ export default class BoardPresenter {
   };
 
   #renderBoard = () => {
-    if (!this.events.length) {
+    if (this.events.length === 0) {
       this.#renderNoEvents();
       return;
     }
@@ -75,7 +75,12 @@ export default class BoardPresenter {
     this.#renderListEvents();
   };
 
-  #renderNoEvents = () => render(this.#noEventsComponent, this.#boardContainer);
+  #renderNoEvents = () => {
+    this.#noEventsComponent = new NoEventsView({
+      filterType: this.#filterModel.filter,
+    });
+    render(this.#noEventsComponent, this.#boardContainer);
+  };
 
   #renderSort = () => {
     this.#sortComponent = new SortView({
@@ -106,6 +111,11 @@ export default class BoardPresenter {
   #clearBoard = () => {
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPresenters.clear();
+
+    remove(this.#sortComponent);
+    if (this.#noEventsComponent) {
+      remove(this.#noEventsComponent);
+    }
   };
 
   #onViewAction = (actionType, updateType, update) => {
@@ -135,7 +145,8 @@ export default class BoardPresenter {
       case UpdateType.MAJOR:
         //TODO - обновить всю доску
         this.#clearBoard();
-        this.#renderListEvents();
+        // this.#renderListEvents();
+        this.#renderBoard();
         break;
     }
   };

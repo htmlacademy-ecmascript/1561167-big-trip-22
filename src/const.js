@@ -35,6 +35,13 @@ const TypesFilters = {
   PAST: 'past',
 };
 
+const textByCurrentFilterType = {
+  [TypesFilters.EVERYTHING]: 'Click New Event to create your first point',
+  [TypesFilters.FUTURE]: 'There are no future events now',
+  [TypesFilters.PRESENT]: 'There are no present events now',
+  [TypesFilters.PAST]: 'There are no past events now',
+};
+
 const TypesSorting = {
   DAY: 'day',
   TIME: 'time',
@@ -69,6 +76,7 @@ export {
   MSEC_IN_DAY,
   MSEC_IN_HOUR,
   TypesFilters,
+  textByCurrentFilterType,
   TypesSorting,
   PRESET_SORTING_TYPE,
   UserAction,
