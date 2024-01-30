@@ -1,7 +1,7 @@
 import Observable from '../framework/observable';
 
 export default class EventsModel extends Observable {
-  #events = null;
+  #events = [];
 
   constructor(events) {
     super();

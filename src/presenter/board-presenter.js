@@ -10,12 +10,15 @@ import {
   UserAction,
 } from '../const';
 import { compareByDuration, compareByPrice } from '../utils/events';
+import { filter } from '../utils/filter';
 
 export default class BoardPresenter {
   #boardContainer = null;
+
   #eventsModel = null;
   #destinationsModel = null;
   #offersModel = null;
+  #filterModel = null;
 
   #eventsContainerComponent = new EventsContainerView();
   #noEventsComponent = new NoEventsView();
@@ -25,25 +28,37 @@ export default class BoardPresenter {
   #currentSortingType = PRESET_SORTING_TYPE;
 
   constructor(board) {
-    const { boardContainer, eventsModel, destinationsModel, offerrsModel } =
-      board;
+    const {
+      boardContainer,
+      eventsModel,
+      destinationsModel,
+      offerrsModel,
+      filterModel,
+    } = board;
 
     this.#boardContainer = boardContainer;
     this.#eventsModel = eventsModel;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offerrsModel;
+    this.#filterModel = filterModel;
 
     this.#eventsModel.addObserver(this.#onModelEvent);
+    this.#filterModel.addObserver(this.#onModelEvent);
   }
 
   get events() {
+    const currentFilterType = this.#filterModel.filter;
+    const events = this.#eventsModel.events;
+    const filteredEvents = filter[currentFilterType](events);
+
     switch (this.#currentSortingType) {
       case TypesSorting.TIME:
-        return [...this.#eventsModel.events].sort(compareByDuration);
+        return filteredEvents.sort(compareByDuration);
       case TypesSorting.PRICE:
-        return [...this.#eventsModel.events].sort(compareByPrice);
+        return filteredEvents.sort(compareByPrice);
     }
-    return this.#eventsModel.events;
+
+    return filteredEvents;
   }
 
   init = () => {

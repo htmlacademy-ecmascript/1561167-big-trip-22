@@ -5,10 +5,13 @@ import FilterView from '../view/filter-view';
 
 export default class FilterPresenter {
   #filterContainer = null;
+
   #filterModel = null;
   #eventsModel = null;
 
   #filterComponent = null;
+
+  #currentFilterType = TypesFilters.EVERYTHING;
 
   constructor({ filterContainer, filterModel, eventsModel }) {
     this.#filterContainer = filterContainer;
@@ -34,7 +37,7 @@ export default class FilterPresenter {
 
     this.#filterComponent = new FilterView({
       filters,
-      currentFilterType: TypesFilters.EVERYTHING,
+      currentFilterType: this.#currentFilterType,
       onFilterTypeChange: this.#onFilterTypeChange,
     });
 
@@ -56,6 +59,7 @@ export default class FilterPresenter {
       return;
     }
 
+    this.#currentFilterType = filterType;
     this.#filterModel.setFilter(UpdateType.MAJOR, filterType);
   };
 }

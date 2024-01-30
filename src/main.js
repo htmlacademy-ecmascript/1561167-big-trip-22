@@ -30,6 +30,7 @@ const boardPresenter = new BoardPresenter({
   eventsModel,
   destinationsModel,
   offerrsModel,
+  filterModel,
 });
 
 headerPresenter.init();
