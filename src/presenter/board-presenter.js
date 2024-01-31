@@ -95,6 +95,11 @@ export default class BoardPresenter {
     this.events.forEach((itemEvent) => this.#renderEvent(itemEvent));
   };
 
+  #clearListEvents = () => {
+    this.#eventPresenters.forEach((presenter) => presenter.destroy());
+    this.#eventPresenters.clear();
+  };
+
   #renderEvent = (event) => {
     const eventPresenter = new EventPresenter({
       destinations: this.#destinationsModel.destinations,
@@ -109,9 +114,7 @@ export default class BoardPresenter {
   };
 
   #clearBoard = () => {
-    this.#eventPresenters.forEach((presenter) => presenter.destroy());
-    this.#eventPresenters.clear();
-
+    this.#clearListEvents();
     remove(this.#sortComponent);
     if (this.#noEventsComponent) {
       remove(this.#noEventsComponent);
@@ -139,13 +142,12 @@ export default class BoardPresenter {
         break;
       case UpdateType.MINOR:
         //TODO - обновить список
-        this.#clearBoard();
+        this.#clearListEvents();
         this.#renderListEvents();
         break;
       case UpdateType.MAJOR:
         //TODO - обновить всю доску
         this.#clearBoard();
-        // this.#renderListEvents();
         this.#renderBoard();
         break;
     }
@@ -161,7 +163,7 @@ export default class BoardPresenter {
     }
 
     this.#currentSortingType = typeSorting;
-    this.#clearBoard();
+    this.#clearListEvents();
     this.#renderListEvents();
   };
 }

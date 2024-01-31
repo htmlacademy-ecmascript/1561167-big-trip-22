@@ -55,18 +55,15 @@ const getInitialFinalDestination = ({ events, destinations }) => {
 };
 
 const createHeaderTemplate = ({ events, offers, destinations }) => {
-  if (!events.length) {
-    return '';
-  }
+  const isEmptyEvent = events.length === 0;
 
-  const initialDate = humanizeDateShortFormat(
-    events[0].dateFrom,
-    DAY_MONTH_TEMPLATE
-  );
-  const finalDate = humanizeDateShortFormat(
-    events[events.length - 1].dateTo,
-    SHORT_DATE_TEMPLATE
-  );
+  const initialDate = !isEmptyEvent
+    ? humanizeDateShortFormat(events[0].dateFrom, DAY_MONTH_TEMPLATE)
+    : '';
+  const lastItem = !isEmptyEvent ? events[events.length - 1] : null;
+  const finalDate = !isEmptyEvent
+    ? humanizeDateShortFormat(lastItem.dateTo, SHORT_DATE_TEMPLATE)
+    : '';
   const title = getInitialFinalDestination({
     events,
     destinations,
@@ -77,7 +74,7 @@ const createHeaderTemplate = ({ events, offers, destinations }) => {
         <h1 class="trip-info__title">${title}</h1>
         <p class="trip-info__dates">
         ${initialDate}
-        &nbsp;—&nbsp;
+        ${events.length <= 1 ? '' : '&nbsp;—&nbsp;'}
         ${finalDate}
         </p>
       </div>
