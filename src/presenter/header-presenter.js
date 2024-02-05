@@ -1,44 +1,73 @@
-import { RenderPosition, render } from '../framework/render';
-import FilterView from '../view/filter-view';
-import InformationTripView from '../view/information-trip-view';
+import { RenderPosition, remove, render, replace } from '../framework/render';
+import HeaderView from '../view/header-view';
+// import NewEventButtonView from '../view/new-event-button-view';
+import FilterPresenter from './filter-presenter';
 
 export default class HeaderPresenter {
   #eventsModel = null;
-  #destinationModel = null;
+  #destinationsModel = null;
   #offersModel = null;
-  #tripHeaderContainer = null;
-  #filterContainer = null;
-  #filters = null;
+
+  #headerContainer = null;
+  #headerComponent = null;
+
+  #filterPresenter = null;
+
+  #newEventButtonComponent = null;
 
   constructor({
     eventsModel,
     destinationsModel,
     offerrsModel,
-    tripHeaderContainer,
+    filterModel,
+    headerContainer,
     filterContainer,
-    filters,
+    newEventButtonComponent,
   }) {
     this.#eventsModel = eventsModel;
-    this.#destinationModel = destinationsModel;
+    this.#destinationsModel = destinationsModel;
     this.#offersModel = offerrsModel;
-    this.#tripHeaderContainer = tripHeaderContainer;
-    this.#filterContainer = filterContainer;
-    this.#filters = filters;
+    this.#headerContainer = headerContainer;
+    this.#newEventButtonComponent = newEventButtonComponent;
+    this.#filterPresenter = new FilterPresenter({
+      filterContainer,
+      filterModel,
+      eventsModel,
+    });
+
+    this.#eventsModel.addObserver(this.#onModelEvent);
   }
 
   init = () => {
-    const informationTripComponent = new InformationTripView({
-      events: [...this.#eventsModel.all],
-      offers: [...this.#offersModel.all],
-      destinations: [...this.#destinationModel.all],
+    const prevHeaderComponent = this.#headerComponent;
+
+    this.#headerComponent = new HeaderView({
+      events: this.#eventsModel.events,
+      offers: this.#offersModel.offers,
+      destinations: this.#destinationsModel.destinations,
     });
-    if (informationTripComponent.element) {
+
+    this.#renderNewEventButton();
+
+    if (prevHeaderComponent === null) {
       render(
-        informationTripComponent,
-        this.#tripHeaderContainer,
+        this.#headerComponent,
+        this.#headerContainer,
         RenderPosition.AFTERBEGIN
       );
+      this.#filterPresenter.init();
+      return;
     }
-    render(new FilterView(this.#filters), this.#filterContainer);
+
+    replace(this.#headerComponent, prevHeaderComponent);
+    remove(prevHeaderComponent);
+    this.#filterPresenter.init();
+  };
+
+  #renderNewEventButton = () =>
+    render(this.#newEventButtonComponent, this.#headerContainer);
+
+  #onModelEvent = () => {
+    this.init();
   };
 }

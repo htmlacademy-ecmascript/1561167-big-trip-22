@@ -34,45 +34,36 @@ const getGlobalCostTrip = ({ events, offers: allOffers }) => {
 };
 
 const getInitialFinalDestination = ({ events, destinations }) => {
-  const getNameCityEvent = ({ event, points }) =>
-    points.find(({ id }) => id === event.destination).name;
+  const getNameDestination = ({ event, points }) =>
+    points.find(({ id }) => id === event.destination)?.name;
 
   if (!events.length) {
     return '';
   }
 
-  const initialCity = getNameCityEvent({
-    event: events[0],
-    points: destinations,
-  });
-  if (events.length === 1) {
-    return initialCity;
+  const allTitles = events.map((event) =>
+    getNameDestination({ event, points: destinations })
+  );
+  const uniqueTitles = new Set(allTitles);
+
+  if (uniqueTitles.size > 3) {
+    const titles = [...uniqueTitles.values()];
+    return `${titles[0]} — ... — ${titles[titles.length - 1]}`;
   }
 
-  const finalCity = getNameCityEvent({
-    event: events[events.length - 1],
-    points: destinations,
-  });
-  if (events.length === 2) {
-    return `${initialCity} — ${finalCity}`;
-  }
-
-  return `${initialCity} — ... — ${finalCity}`;
+  return [...uniqueTitles].join(' — ');
 };
 
-const createInformationTripTemplate = ({ events, offers, destinations }) => {
-  if (!events.length) {
-    return '';
-  }
+const createHeaderTemplate = ({ events, offers, destinations }) => {
+  const isEmptyEvent = events.length === 0;
 
-  const initialDate = humanizeDateShortFormat(
-    events[0].dateFrom,
-    DAY_MONTH_TEMPLATE
-  );
-  const finalDate = humanizeDateShortFormat(
-    events[events.length - 1].dateTo,
-    SHORT_DATE_TEMPLATE
-  );
+  const initialDate = !isEmptyEvent
+    ? humanizeDateShortFormat(events[0].dateFrom, DAY_MONTH_TEMPLATE)
+    : '';
+  const lastItem = !isEmptyEvent ? events[events.length - 1] : null;
+  const finalDate = !isEmptyEvent
+    ? humanizeDateShortFormat(lastItem.dateTo, SHORT_DATE_TEMPLATE)
+    : '';
   const title = getInitialFinalDestination({
     events,
     destinations,
@@ -83,7 +74,7 @@ const createInformationTripTemplate = ({ events, offers, destinations }) => {
         <h1 class="trip-info__title">${title}</h1>
         <p class="trip-info__dates">
         ${initialDate}
-        &nbsp;—&nbsp;
+        ${events.length <= 1 ? '' : '&nbsp;—&nbsp;'}
         ${finalDate}
         </p>
       </div>
@@ -94,7 +85,7 @@ const createInformationTripTemplate = ({ events, offers, destinations }) => {
     </section>`;
 };
 
-export default class InformationTripView extends AbstractView {
+export default class HeaderView extends AbstractView {
   #offers = [];
   #events = [];
   #destinations = [];
@@ -107,7 +98,7 @@ export default class InformationTripView extends AbstractView {
   }
 
   get template() {
-    return createInformationTripTemplate({
+    return createHeaderTemplate({
       events: this.#events,
       offers: this.#offers,
       destinations: this.#destinations,

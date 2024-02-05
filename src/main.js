@@ -2,40 +2,50 @@ import EventsModel from './model/events-model';
 import DestinationsModel from './model/destinations-model';
 import OffersModel from './model/offers-model';
 import BoardPresenter from './presenter/board-presenter';
-import { loadDestinations, loadOffers, loadRandomEvent } from './mock/mocks';
-import { TEST_EVENTS_COUNT } from './const';
-import { generateFilter } from './mock/filter';
 import HeaderPresenter from './presenter/header-presenter';
+import { loadDestinations, loadOffers, loadRandomEvent } from './mock/mocks';
+import FilterModel from './model/filter-model';
+import NewEventButtonView from './view/new-event-button-view';
 
-const tripHeaderNode = document.querySelector('.trip-main');
-const filterContainerNode = tripHeaderNode.querySelector(
+const headerContainerNode = document.querySelector('.trip-main');
+const filterContainerNode = headerContainerNode.querySelector(
   '.trip-controls__filters'
 );
 const eventsContainerNode = document.querySelector('.trip-events');
 
-const eventsModel = new EventsModel(
-  Array.from({ length: TEST_EVENTS_COUNT }, loadRandomEvent).sort(
-    (eventA, eventB) => new Date(eventA.dateFrom) - new Date(eventB.dateFrom)
-  )
-);
+const eventsModel = new EventsModel(loadRandomEvent());
 const destinationsModel = new DestinationsModel(loadDestinations());
 const offerrsModel = new OffersModel(loadOffers());
-const filters = generateFilter(eventsModel.all);
+const filterModel = new FilterModel();
+
+const newEventButtonComponent = new NewEventButtonView(onNewEventButtonClick);
 
 const headerPresenter = new HeaderPresenter({
-  tripHeaderContainer: tripHeaderNode,
+  headerContainer: headerContainerNode,
   filterContainer: filterContainerNode,
   eventsModel,
   destinationsModel,
   offerrsModel,
-  filters,
+  filterModel,
+  newEventButtonComponent,
 });
 const boardPresenter = new BoardPresenter({
   boardContainer: eventsContainerNode,
   eventsModel,
   destinationsModel,
   offerrsModel,
+  filterModel,
+  onNewEventDestroy: onNewEventFormClose,
 });
+
+function onNewEventFormClose() {
+  newEventButtonComponent.element.disabled = false;
+}
+
+function onNewEventButtonClick() {
+  newEventButtonComponent.element.disabled = true;
+  boardPresenter.createNewEvent();
+}
 
 headerPresenter.init();
 boardPresenter.init();

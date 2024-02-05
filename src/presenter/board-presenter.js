@@ -1,45 +1,91 @@
-import { render } from '../framework/render';
+import { remove, render } from '../framework/render';
 import EventsContainerView from '../view/events-container-view';
 import SortView from '../view/sort-view';
 import NoEventsView from '../view/no-events-view';
 import EventPresenter from './event-presenter';
-import { getLowerCase, updateItem } from '../utils/common';
-import { PRESET_SORTING_TYPE, TypesSorting } from '../const';
+import {
+  PRESET_SORTING_TYPE,
+  TypesFilters,
+  TypesSorting,
+  UpdateType,
+  UserAction,
+} from '../const';
 import { compareByDuration, compareByPrice } from '../utils/events';
+import { filter } from '../utils/filter';
+import NewEventPresenter from './new-event-presenter';
 
 export default class BoardPresenter {
   #boardContainer = null;
+
   #eventsModel = null;
   #destinationsModel = null;
   #offersModel = null;
+  #filterModel = null;
 
-  #boardEvents = [];
   #eventsContainerComponent = new EventsContainerView();
-  #noEventsComponent = new NoEventsView();
-  #eventPresenters = new Map();
+  #noEventsComponent = null;
 
   #sortComponent = null;
-  #currentSortingType = getLowerCase(PRESET_SORTING_TYPE);
-  #initialStateEvents = [];
+  #currentSortingType = PRESET_SORTING_TYPE;
+
+  #newEventPresenter = null;
+  #onNewEventDestroy = null;
+
+  #eventPresenters = new Map();
 
   constructor(board) {
-    const { boardContainer, eventsModel, destinationsModel, offerrsModel } =
-      board;
+    const {
+      boardContainer,
+      eventsModel,
+      destinationsModel,
+      offerrsModel,
+      filterModel,
+      onNewEventDestroy,
+    } = board;
 
     this.#boardContainer = boardContainer;
     this.#eventsModel = eventsModel;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offerrsModel;
+    this.#filterModel = filterModel;
+    this.#onNewEventDestroy = onNewEventDestroy;
+
+    this.#newEventPresenter = new NewEventPresenter({
+      eventsContainer: this.#eventsContainerComponent.element,
+      onDataChange: this.#onViewAction,
+      onDestroy: this.#onNewEventDestroy,
+    });
+
+    this.#eventsModel.addObserver(this.#onModelEvent);
+    this.#filterModel.addObserver(this.#onModelEvent);
+  }
+
+  get events() {
+    const events = this.#eventsModel.events;
+    const filteredEvents = filter[this.#filterModel.filter](events);
+
+    switch (this.#currentSortingType) {
+      case TypesSorting.TIME:
+        return filteredEvents.sort(compareByDuration);
+      case TypesSorting.PRICE:
+        return filteredEvents.sort(compareByPrice);
+    }
+
+    return filteredEvents;
   }
 
   init = () => {
-    this.#initialStateEvents = [...this.#eventsModel.all];
-    this.#boardEvents = [...this.#initialStateEvents];
     this.#renderBoard();
   };
 
+  createNewEvent = () => {
+    this.#currentSortingType = PRESET_SORTING_TYPE;
+    this.#filterModel.setFilter(UpdateType.MAJOR, TypesFilters.EVERYTHING);
+    this.#newEventPresenter.init();
+  };
+
   #renderBoard = () => {
-    if (this.#eventsModel.isEmpty) {
+    if (this.events.length === 0) {
       this.#renderNoEvents();
       return;
     }
@@ -48,7 +94,12 @@ export default class BoardPresenter {
     this.#renderListEvents();
   };
 
-  #renderNoEvents = () => render(this.#noEventsComponent, this.#boardContainer);
+  #renderNoEvents = () => {
+    this.#noEventsComponent = new NoEventsView({
+      filterType: this.#filterModel.filter,
+    });
+    render(this.#noEventsComponent, this.#boardContainer);
+  };
 
   #renderSort = () => {
     this.#sortComponent = new SortView({
@@ -60,15 +111,15 @@ export default class BoardPresenter {
 
   #renderListEvents = () => {
     render(this.#eventsContainerComponent, this.#boardContainer);
-    this.#boardEvents.forEach((itemEvent) => this.#renderEvent(itemEvent));
+    this.events.forEach((itemEvent) => this.#renderEvent(itemEvent));
   };
 
   #renderEvent = (event) => {
     const eventPresenter = new EventPresenter({
-      destinations: this.#destinationsModel.all,
-      offers: this.#offersModel.all,
+      destinations: this.#destinationsModel.destinations,
+      offers: this.#offersModel.offers,
       eventsContainer: this.#eventsContainerComponent.element,
-      onEventChange: this.#onEventChange,
+      onDataChange: this.#onViewAction,
       onModeChange: this.#onModeChange,
     });
 
@@ -81,27 +132,44 @@ export default class BoardPresenter {
     this.#eventPresenters.clear();
   };
 
-  #sortEvent = (typeSorting) => {
-    switch (typeSorting) {
-      case getLowerCase(TypesSorting.TIME):
-        this.#boardEvents.sort(compareByDuration);
+  #clearBoard = () => {
+    this.#clearListEvents();
+    remove(this.#sortComponent);
+    if (this.#noEventsComponent) {
+      remove(this.#noEventsComponent);
+    }
+  };
+
+  #onViewAction = (actionType, updateType, update) => {
+    switch (actionType) {
+      case UserAction.UPDATE_EVENT:
+        this.#eventsModel.updateEvent(updateType, update);
         break;
-      case getLowerCase(TypesSorting.PRICE):
-        this.#boardEvents.sort(compareByPrice);
+      case UserAction.ADD_EVENT:
+        this.#eventsModel.addEvent(updateType, update);
         break;
-      default:
-        this.#boardEvents = [...this.#initialStateEvents];
+      case UserAction.DELETE_EVENT:
+        this.#eventsModel.deleteEvent(updateType, update);
         break;
     }
   };
 
-  #onEventChange = (updateEvent) => {
-    this.#boardEvents = updateItem(this.#boardEvents, updateEvent);
-    this.#initialStateEvents = updateItem(
-      this.#initialStateEvents,
-      updateEvent
-    );
-    this.#eventPresenters.get(updateEvent.id).init(updateEvent);
+  #onModelEvent = (updateType, data) => {
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this.#eventPresenters.get(data.id).init(data);
+        break;
+      case UpdateType.MINOR:
+        //TODO - обновить список
+        this.#clearListEvents();
+        this.#renderListEvents();
+        break;
+      case UpdateType.MAJOR:
+        //TODO - обновить всю доску
+        this.#clearBoard();
+        this.#renderBoard();
+        break;
+    }
   };
 
   #onModeChange = () => {
@@ -114,8 +182,9 @@ export default class BoardPresenter {
     }
 
     this.#currentSortingType = typeSorting;
-    this.#sortEvent(typeSorting);
     this.#clearListEvents();
     this.#renderListEvents();
   };
+
+  // #onNewEventDestroy = () => (newTaskButtonComponent.element.disabled = false);
 }

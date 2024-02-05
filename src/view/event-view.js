@@ -7,13 +7,13 @@ import {
   getNameDeatination,
 } from '../utils/events';
 
-const getTotalCostOffers = (offers) => {
-  if (!offers.length) {
-    return 0;
-  }
+// const getTotalCostOffers = (offers) => {
+//   if (!offers.length) {
+//     return 0;
+//   }
 
-  return offers.reduce((acc, item) => acc + item.price, 0);
-};
+//   return offers.reduce((acc, item) => acc + item.price, 0);
+// };
 
 const createListOffersTemplate = (offers) => {
   if (!offers.length) {
@@ -78,7 +78,7 @@ const createEventTemplate = ({ event, destinations, offers }) => {
       </div>
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">
-        ${basePrice + getTotalCostOffers(selectedOffers)}</span>
+        ${basePrice}</span>
       </p>
       <h4 class="visually-hidden">Offers:</h4>
       ${createListOffersTemplate(selectedOffers)}
@@ -99,8 +99,8 @@ const createEventTemplate = ({ event, destinations, offers }) => {
 
 export default class EventView extends AbstractView {
   #event = null;
-  #destinations = null;
-  #offers = null;
+  #destinations = [];
+  #offers = [];
   #onEventModeToggleClick = null;
   #onFavoriteClick = null;
 

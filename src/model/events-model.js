@@ -1,20 +1,48 @@
-export default class EventsModel {
-  #events = null;
+import Observable from '../framework/observable';
+
+export default class EventsModel extends Observable {
+  #events = [];
 
   constructor(events) {
+    super();
     this.#events = events;
-    // do {
-    //   this.#events = Array.from({ length: TEST_EVENTS_COUNT }, loadRandomEvent);
-    // } while (!this.#events.find(({ id }) => id === TEST_EVENT_ID));
   }
 
-  get all() {
+  get events() {
     return this.#events;
   }
 
-  get isEmpty() {
-    return this.#events.length === 0;
-  }
+  updateEvent = (updateType, update) => {
+    const index = this.#events.findIndex(({ id }) => id === update.id);
 
-  getById = (eventId) => this.#events.find(({ id }) => id === eventId);
+    if (index === -1) {
+      throw new Error('Unable to update a non-existent task');
+    }
+
+    this.#events = [
+      ...this.#events.slice(0, index),
+      update,
+      ...this.#events.slice(index + 1),
+    ];
+    this._notify(updateType, update);
+  };
+
+  addEvent = (updateType, update) => {
+    this.#events = [update, ...this.#events];
+    this._notify(updateType, update);
+  };
+
+  deleteEvent = (updateType, update) => {
+    const index = this.#events.findIndex(({ id }) => id === update.id);
+
+    if (index === -1) {
+      throw new Error('Unable to delete a non-existent task');
+    }
+
+    this.#events = [
+      ...this.#events.slice(0, index),
+      ...this.#events.slice(index + 1),
+    ];
+    this._notify(updateType);
+  };
 }

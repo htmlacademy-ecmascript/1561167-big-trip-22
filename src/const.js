@@ -29,10 +29,17 @@ const SHORT_EVENT_DURATION_TEMPLATE = 'mm[M]';
 const DATE_EVENT_TEMPLATE = 'DD/MM/YY hh:mm';
 
 const TypesFilters = {
-  EVERYTHING: 'Everything',
-  FUTURE: 'Future',
-  PRESENT: 'Present',
-  PAST: 'Past',
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PRESENT: 'present',
+  PAST: 'past',
+};
+
+const textByCurrentFilterType = {
+  [TypesFilters.EVERYTHING]: 'Click New Event to create your first point',
+  [TypesFilters.FUTURE]: 'There are no future events now',
+  [TypesFilters.PRESENT]: 'There are no present events now',
+  [TypesFilters.PAST]: 'There are no past events now',
 };
 
 const TypesSorting = {
@@ -43,13 +50,20 @@ const TypesSorting = {
 
 const PRESET_SORTING_TYPE = TypesSorting.DAY;
 
-const TEST_EVENT_ID = '22';
-const TEST_EVENTS_COUNT = 5;
+const UserAction = {
+  UPDATE_EVENT: 'UPDATE_EVENT',
+  ADD_EVENT: 'ADD_EVENT',
+  DELETE_EVENT: 'DELETE_EVENT',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
 
 export {
   TYPES_EVENTS,
-  TEST_EVENT_ID,
-  TEST_EVENTS_COUNT,
   PRESET_EVENT_POINT_TYPE,
   DAY_MONTH_TEMPLATE,
   SHORT_DATE_TEMPLATE,
@@ -62,6 +76,9 @@ export {
   MSEC_IN_DAY,
   MSEC_IN_HOUR,
   TypesFilters,
+  textByCurrentFilterType,
   TypesSorting,
   PRESET_SORTING_TYPE,
+  UserAction,
+  UpdateType,
 };

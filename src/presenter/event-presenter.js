@@ -1,3 +1,4 @@
+import { UpdateType, UserAction } from '../const';
 import { remove, render, replace } from '../framework/render';
 import { isEscapeKey } from '../utils/common';
 import EventEditingFormView from '../view/event-editing-form-view';
@@ -5,12 +6,12 @@ import EventView from '../view/event-view';
 
 export default class EventPresenter {
   #event = null;
-  #destinations = null;
-  #offers = null;
+  #destinations = [];
+  #offers = [];
   #eventComponent = null;
   #eventEditingFormComponent = null;
   #eventsContainer = null;
-  #onEventChange = null;
+  #onDataChange = null;
   #onModeChange = null;
   #isEditingMode = false;
 
@@ -18,13 +19,13 @@ export default class EventPresenter {
     destinations,
     offers,
     eventsContainer,
-    onEventChange,
+    onDataChange,
     onModeChange,
   }) {
     this.#destinations = destinations;
     this.#offers = offers;
     this.#eventsContainer = eventsContainer;
-    this.#onEventChange = onEventChange;
+    this.#onDataChange = onDataChange;
     this.#onModeChange = onModeChange;
   }
 
@@ -36,17 +37,19 @@ export default class EventPresenter {
 
     this.#eventComponent = new EventView({
       event: this.#event,
-      destinations: [...this.#destinations],
-      offers: [...this.#offers],
+      destinations: this.#destinations,
+      offers: this.#offers,
       onEventModeToggleClick: this.#onEventModeToggleClick,
       onFavoriteClick: this.#onFavoriteClick,
     });
+
     this.#eventEditingFormComponent = new EventEditingFormView({
       event: this.#event,
-      destinations: [...this.#destinations],
-      offers: [...this.#offers],
+      destinations: this.#destinations,
+      offers: this.#offers,
       onEditingModeToggleClick: this.#onEditingModeToggleClick,
       onEditingFormSubmit: this.#onEditingFormSubmit,
+      onDeletingEditFormClick: this.#onDeletingEditFormClick,
     });
 
     if (prevEventComponent === null || prevEventEditingFormComponent === null) {
@@ -97,13 +100,18 @@ export default class EventPresenter {
     this.#replaceEditFormToEvent();
   };
 
-  #onEditingFormSubmit = () => {
-    //TODO - ОТПРАВКА ФОРМЫ
+  #onEditingFormSubmit = (event) => {
+    this.#onDataChange(UserAction.UPDATE_EVENT, UpdateType.MINOR, event);
+    this.#replaceEditFormToEvent();
+  };
+
+  #onDeletingEditFormClick = (event) => {
+    this.#onDataChange(UserAction.DELETE_EVENT, UpdateType.MAJOR, event);
     this.#replaceEditFormToEvent();
   };
 
   #onFavoriteClick = () => {
-    this.#onEventChange({
+    this.#onDataChange(UserAction.UPDATE_EVENT, UpdateType.PATCH, {
       ...this.#event,
       isFavorite: !this.#event.isFavorite,
     });
