@@ -1,6 +1,6 @@
 import { RenderPosition, remove, render, replace } from '../framework/render';
 import HeaderView from '../view/header-view';
-import NewEventButtonView from '../view/new-event-button-view';
+// import NewEventButtonView from '../view/new-event-button-view';
 import FilterPresenter from './filter-presenter';
 
 export default class HeaderPresenter {
@@ -22,11 +22,13 @@ export default class HeaderPresenter {
     filterModel,
     headerContainer,
     filterContainer,
+    newEventButtonComponent,
   }) {
     this.#eventsModel = eventsModel;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offerrsModel;
     this.#headerContainer = headerContainer;
+    this.#newEventButtonComponent = newEventButtonComponent;
     this.#filterPresenter = new FilterPresenter({
       filterContainer,
       filterModel,
@@ -62,16 +64,10 @@ export default class HeaderPresenter {
     this.#filterPresenter.init();
   };
 
-  #renderNewEventButton = () => {
-    this.#newEventButtonComponent = new NewEventButtonView(this.#onButtonClick);
+  #renderNewEventButton = () =>
     render(this.#newEventButtonComponent, this.#headerContainer);
-  };
 
   #onModelEvent = () => {
     this.init();
-  };
-
-  #onButtonClick = (evt) => {
-    console.log('HeaderPresenter evt.target:', evt.target.textContent);
   };
 }

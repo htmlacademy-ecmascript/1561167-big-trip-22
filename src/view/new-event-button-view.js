@@ -8,21 +8,21 @@ const createNewEventButtonTemplate = () => `
 `;
 
 export default class NewEventButtonView extends AbstractView {
-  #onButtonClick = null;
+  #onNewEventButtonClick = null;
 
-  constructor(onButtonClick) {
+  constructor(onNewEventButtonClick) {
     super();
-    this.#onButtonClick = onButtonClick;
+    this.#onNewEventButtonClick = onNewEventButtonClick;
 
-    this.element.addEventListener('click', this.#buttonClickHandler);
+    this.element.addEventListener('click', this.#newEventButtonClickHandler);
   }
 
   get template() {
     return createNewEventButtonTemplate();
   }
 
-  #buttonClickHandler = (evt) => {
+  #newEventButtonClickHandler = (evt) => {
     evt.preventDefault();
-    this.#onButtonClick(evt);
+    this.#onNewEventButtonClick(evt);
   };
 }

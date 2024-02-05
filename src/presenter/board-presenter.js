@@ -5,12 +5,14 @@ import NoEventsView from '../view/no-events-view';
 import EventPresenter from './event-presenter';
 import {
   PRESET_SORTING_TYPE,
+  TypesFilters,
   TypesSorting,
   UpdateType,
   UserAction,
 } from '../const';
 import { compareByDuration, compareByPrice } from '../utils/events';
 import { filter } from '../utils/filter';
+import NewEventPresenter from './new-event-presenter';
 
 export default class BoardPresenter {
   #boardContainer = null;
@@ -22,9 +24,12 @@ export default class BoardPresenter {
 
   #eventsContainerComponent = new EventsContainerView();
   #noEventsComponent = null;
-  #sortComponent = null;
 
+  #sortComponent = null;
   #currentSortingType = PRESET_SORTING_TYPE;
+
+  #newEventPresenter = null;
+  #onNewEventDestroy = null;
 
   #eventPresenters = new Map();
 
@@ -35,6 +40,7 @@ export default class BoardPresenter {
       destinationsModel,
       offerrsModel,
       filterModel,
+      onNewEventDestroy,
     } = board;
 
     this.#boardContainer = boardContainer;
@@ -42,6 +48,13 @@ export default class BoardPresenter {
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offerrsModel;
     this.#filterModel = filterModel;
+    this.#onNewEventDestroy = onNewEventDestroy;
+
+    this.#newEventPresenter = new NewEventPresenter({
+      eventsContainer: this.#eventsContainerComponent.element,
+      onDataChange: this.#onViewAction,
+      onDestroy: this.#onNewEventDestroy,
+    });
 
     this.#eventsModel.addObserver(this.#onModelEvent);
     this.#filterModel.addObserver(this.#onModelEvent);
@@ -63,6 +76,12 @@ export default class BoardPresenter {
 
   init = () => {
     this.#renderBoard();
+  };
+
+  createNewEvent = () => {
+    this.#currentSortingType = PRESET_SORTING_TYPE;
+    this.#filterModel.setFilter(UpdateType.MAJOR, TypesFilters.EVERYTHING);
+    this.#newEventPresenter.init();
   };
 
   #renderBoard = () => {
@@ -95,11 +114,6 @@ export default class BoardPresenter {
     this.events.forEach((itemEvent) => this.#renderEvent(itemEvent));
   };
 
-  #clearListEvents = () => {
-    this.#eventPresenters.forEach((presenter) => presenter.destroy());
-    this.#eventPresenters.clear();
-  };
-
   #renderEvent = (event) => {
     const eventPresenter = new EventPresenter({
       destinations: this.#destinationsModel.destinations,
@@ -111,6 +125,11 @@ export default class BoardPresenter {
 
     this.#eventPresenters.set(event.id, eventPresenter);
     eventPresenter.init(event);
+  };
+
+  #clearListEvents = () => {
+    this.#eventPresenters.forEach((presenter) => presenter.destroy());
+    this.#eventPresenters.clear();
   };
 
   #clearBoard = () => {
@@ -166,4 +185,6 @@ export default class BoardPresenter {
     this.#clearListEvents();
     this.#renderListEvents();
   };
+
+  // #onNewEventDestroy = () => (newTaskButtonComponent.element.disabled = false);
 }

@@ -5,6 +5,7 @@ import BoardPresenter from './presenter/board-presenter';
 import HeaderPresenter from './presenter/header-presenter';
 import { loadDestinations, loadOffers, loadRandomEvent } from './mock/mocks';
 import FilterModel from './model/filter-model';
+import NewEventButtonView from './view/new-event-button-view';
 
 const headerContainerNode = document.querySelector('.trip-main');
 const filterContainerNode = headerContainerNode.querySelector(
@@ -17,6 +18,8 @@ const destinationsModel = new DestinationsModel(loadDestinations());
 const offerrsModel = new OffersModel(loadOffers());
 const filterModel = new FilterModel();
 
+const newEventButtonComponent = new NewEventButtonView(onNewEventButtonClick);
+
 const headerPresenter = new HeaderPresenter({
   headerContainer: headerContainerNode,
   filterContainer: filterContainerNode,
@@ -24,6 +27,7 @@ const headerPresenter = new HeaderPresenter({
   destinationsModel,
   offerrsModel,
   filterModel,
+  newEventButtonComponent,
 });
 const boardPresenter = new BoardPresenter({
   boardContainer: eventsContainerNode,
@@ -31,7 +35,17 @@ const boardPresenter = new BoardPresenter({
   destinationsModel,
   offerrsModel,
   filterModel,
+  onNewEventDestroy: onNewEventFormClose,
 });
+
+function onNewEventFormClose() {
+  newEventButtonComponent.element.disabled = false;
+}
+
+function onNewEventButtonClick() {
+  newEventButtonComponent.element.disabled = true;
+  boardPresenter.createNewEvent();
+}
 
 headerPresenter.init();
 boardPresenter.init();
